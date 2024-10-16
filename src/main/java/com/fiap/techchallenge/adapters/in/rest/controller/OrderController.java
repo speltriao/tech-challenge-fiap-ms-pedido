@@ -56,17 +56,25 @@ public class OrderController {
             @Valid @RequestParam(required = false) String orderDirection
     )
     {
+
+
         OrderFilters filters = new OrderFilters();
         filters.setStatus(OrderStatus.fromString(status));
         filters.setOrderBy(OrderSortFields.fromString(orderBy));
         filters.setDirection(SortDirection.fromString(orderDirection == null ? "ASC" : orderDirection));
+        List<Order> orders = (orderHasNoParameters(status, orderBy, orderDirection))
+                ? iOrderUseCase.getDefaultListOrders()
+                : iOrderUseCase.getAll(filters);
 
-        List<OrderDTO> ordersDTO = iOrderUseCase.getAll(filters)
-                .stream()
+        List<OrderDTO> ordersDTO = orders.stream()
                 .map(OrderDTO::new)
                 .collect(Collectors.toList());
 
         return ResponseEntity.ok(ordersDTO);
+    }
+
+    private boolean orderHasNoParameters(String status, String orderBy, String direction) {
+        return status == null && orderBy == null && direction == null;
     }
 
     @Operation(summary = "Get all details of an order")

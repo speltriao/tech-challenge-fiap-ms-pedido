@@ -15,6 +15,8 @@ public interface IOrderUseCase {
 
     List<Order> getAll(OrderFilters filters);
 
+    List<Order> getDefaultListOrders();
+
     Order get(UUID id) throws EntityNotFoundException;
 
     Order create(Order dto) throws EntityNotFoundException;

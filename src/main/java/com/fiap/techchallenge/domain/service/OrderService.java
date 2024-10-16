@@ -16,6 +16,7 @@ import javax.sql.DataSource;
 import java.math.BigDecimal;
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -27,8 +28,6 @@ public class OrderService implements IOrderUseCase {
 
 
 	OrderRepositoryPort IOrderRepository;
-
-
 
 	public OrderService(DataSource dataSource) {
 		this.IOrderRepository = new OrderRepository(dataSource);
@@ -47,6 +46,59 @@ public class OrderService implements IOrderUseCase {
 		for(Order order : orders) {
 			var waitTime = calculateWaitTime(order);
 			order.setWaitingTimeInSeconds(waitTime);
+		}
+
+		return orders;
+	}
+
+	/**
+	 * Gets the orders using default hierarchy:
+	 * 1. READY_TO_DELIVERY > IN_PREPARATION > RECEIVED
+	 * 2. Older orders first
+	 * 3. Finished orders should NOT be present
+	 * @return: the filtered list of orders
+	 */
+	@Override
+	public List<Order> getDefaultListOrders() {
+		var orders = IOrderRepository.getAll(null);
+		// List with only READY_TO_DELIVERY, IN_PREPARATION and RECEIVED status
+		List<Order> cleanList = orders.stream().filter(i -> i.getStatus().isDefaultListStatus()).toList();
+
+		// Separating lists by status
+		List<Order> ordersReady = filterListByStatus(cleanList, OrderStatus.READY_TO_DELIVERY);
+		List<Order> ordersInPreparation = filterListByStatus(cleanList, OrderStatus.IN_PREPARATION);
+		List<Order> ordersReceived = filterListByStatus(cleanList, OrderStatus.RECEIVED);
+
+		List<Order> ordersFinalList = new ArrayList<>();
+		ordersFinalList.addAll(ordersReady);
+		ordersFinalList.addAll(ordersInPreparation);
+		ordersFinalList.addAll(ordersReceived);
+
+		return ordersFinalList;
+	}
+
+	/**
+	 * Filter a list of orders by the orders status
+	 * @param orders the list of orders that will be filtered
+	 * @param status the status to be filtered
+	 * @return the list of orders filtered by the status
+	 */
+	private List<Order> filterListByStatus(List<Order> orders, OrderStatus status) {
+		return orders.stream().filter(i -> i.getStatus().equals(status)).toList();
+	}
+
+	/**
+	 * Calculate the time in seconds for each order in the list
+	 * @param orders the list of orders that will have the time calculated
+	 * @return the list of orders with time calculated in seconds
+	 */
+	private List<Order> calculateOrdersWaitTime(List<Order> orders) {
+
+		if(!orders.isEmpty()) {
+			for (Order order : orders) {
+				var waitTime = calculateWaitTime(order);
+				order.setWaitingTimeInSeconds(waitTime);
+			}
 		}
 
 		return orders;
