@@ -1,0 +1,14 @@
+spring:
+  application:
+    name: tech-challenge-fiap
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://postgres:5432/galega_burguer
+    username: postgres
+    password: postgres
+    hikari:
+      initialization-fail-timeout: 0
+
+mercadopago:
+  accessKey: 'TEST-4517379499194350-070720-7a234218d8d1d7fe49f0b99f6e21902c-449901113'
+  publicKey: 'TEST-568883f9-e2de-4072-9c4b-54d28066b653'

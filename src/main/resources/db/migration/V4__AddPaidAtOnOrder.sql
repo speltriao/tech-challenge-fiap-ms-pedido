@@ -1,0 +1,1 @@
+ALTER TABLE public.order ADD COLUMN paid_at timestamp DEFAULT null
