@@ -10,7 +10,7 @@ import lombok.Setter;
 
 import java.math.BigDecimal;
 
-import static com.fiap.techchallenge_order.adapters.in.rest.constans.FieldValidationConstants.NOT_BLANK;
+import static com.fiap.techchallenge_order.adapters.in.rest.constants.FieldValidationConstants.NOT_BLANK;
 
 @Getter
 @Setter

@@ -1,4 +1,4 @@
-package com.fiap.techchallenge_order.adapters.in.rest.constans;
+package com.fiap.techchallenge_order.adapters.in.rest.constants;
 
 public abstract class FieldValidationConstants {
 
