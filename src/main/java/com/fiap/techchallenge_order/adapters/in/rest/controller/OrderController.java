@@ -97,8 +97,7 @@ public class OrderController {
 
     @Operation(summary = "Create a new Order")
     @PostMapping
-    public ResponseEntity<OrderDTO> createOrder(@Valid @RequestBody CreateOrderDTO request) throws EntityNotFoundException
-    {
+    public ResponseEntity<OrderDTO> createOrder(@Valid @RequestBody CreateOrderDTO request) {
         Order order = OrderMapper.toDomain(request);
         Order createdOrder = iOrderUseCase.create(order);
 
@@ -110,6 +109,7 @@ public class OrderController {
                 .body(new OrderDTO(createdOrder));
     }
 
+    //TODO: Permitir acesso a essa rota apenas por SQS
     @Operation(summary = "Update the oder's status")
     @PatchMapping("/{id}")
     public ResponseEntity<?> updateStatus(
@@ -124,11 +124,4 @@ public class OrderController {
         return ResponseEntity.badRequest().build();
     }
 
-    @Operation(summary = "Healthcheck")
-    @GetMapping("/ping")
-    public ResponseEntity<String> pong(){
-        return ResponseEntity
-                .status(HttpStatus.OK)
-                .body("Pong");
-    }
 }
