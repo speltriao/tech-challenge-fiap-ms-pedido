@@ -1,9 +1,6 @@
 package com.fiap.techchallenge.domain.entity;
 
 import com.fiap.techchallenge.domain.enums.OrderStatus;
-import com.fiap.techchallenge.domain.payment.Payment;
-import com.fiap.techchallenge.domain.product.ProductAndQuantity;
-
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -31,7 +28,6 @@ public class Order {
 
     private List<OrderHistory> history;
 
-    private Payment payment;
 
     public Order() {}
 
@@ -126,13 +122,5 @@ public class Order {
 
     public void setPaidAt(LocalDateTime paidAt) {
         this.paidAt = paidAt;
-    }
-
-    public Payment getPayment() {
-        return payment;
-    }
-
-    public void setPayment(Payment payment) {
-        this.payment = payment;
     }
 }

@@ -1,31 +1,17 @@
+version: '3.8'
+
 services:
   postgres:
-    image: postgres:16
-    container_name: postgres
+    image: postgres:15-alpine
+    container_name: postgres-db
     environment:
       POSTGRES_DB: galega_burguer
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
     ports:
       - "5432:5432"
-
-  tech-challenge:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    depends_on:
-      - postgres
-    ports:
-      - "8080:8080"
-      - "5005:5005"
-    environment:
-      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/galega_burguer
-      SPRING_DATASOURCE_USERNAME: postgres
-      SPRING_DATASOURCE_PASSWORD: postgres
-      MERCADOPAGO_ACCESS_TOKEN: "TEST-4517379499194350-070720-7a234218d8d1d7fe49f0b99f6e21902c-449901113"
-      MERCADOPAGO_PUBLIC_KEY: "TEST-568883f9-e2de-4072-9c4b-54d28066b653"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
 
 volumes:
   postgres_data:

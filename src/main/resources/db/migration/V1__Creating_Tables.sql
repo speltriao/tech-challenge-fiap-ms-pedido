@@ -1,21 +1,5 @@
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
-CREATE TABLE customer (
-    id uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
-    cpf varchar(11) UNIQUE,
-    name varchar(256),
-    email varchar(256) UNIQUE
-);
-
-CREATE TABLE product (
-   id uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
-   name varchar UNIQUE,
-   description varchar,
-   image_url varchar,
-   price float,
-   category varchar
-);
-
 CREATE TABLE "order" (
   id uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
   order_number SERIAL UNIQUE,
@@ -23,7 +7,7 @@ CREATE TABLE "order" (
   created_at timestamp,
   amount float,
   status varchar,
-  FOREIGN KEY (customer_id) REFERENCES customer (id)
+  paid_at timestamp
 );
 
 CREATE TABLE "order_history" (
@@ -40,6 +24,5 @@ CREATE TABLE "order_products" (
   product_id uuid,
   quantity int,
   FOREIGN KEY ("order_id") REFERENCES "order" (id),
-  FOREIGN KEY ("product_id") REFERENCES "product" (id),
   PRIMARY KEY ("order_id", "product_id")
 );
