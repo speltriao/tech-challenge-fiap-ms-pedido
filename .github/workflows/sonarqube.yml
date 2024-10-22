@@ -1,4 +1,4 @@
-name: SonarQube Analysis
+name: SonarCloud Analysis
 
 on:
   push:
@@ -9,67 +9,31 @@ on:
       - main
 
 jobs:
-  sonarqube:
+  build:
     runs-on: ubuntu-latest
-
-    services:
-      postgres:
-        image: postgres:latest
-        env:
-          POSTGRES_USER: postgres
-          POSTGRES_PASSWORD: postgres
-          POSTGRES_DB: galega_burguer
-        ports:
-          - 5432:5432
-        options: >-
-          --health-cmd="pg_isready -U postgres"
-          --health-interval=10s
-          --health-timeout=5s
-          --health-retries=5
-
-      sonarqube:
-        image: sonarqube:latest
-        ports:
-          - 9000:9000
-        options: >-
-          --health-cmd="curl -f http://localhost:9000/api/system/health || exit 1"
-          --health-interval=30s
-          --health-timeout=10s
-          --health-retries=5
-        env:
-          SONAR_JDBC_URL: jdbc:postgresql://postgres:5432/galega_burguer  # Updated JDBC URL
-          SONAR_JDBC_USERNAME: postgres
-          SONAR_JDBC_PASSWORD: postgres
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Set up JDK
+      - name: Set up JDK 21
         uses: actions/setup-java@v2
         with:
           java-version: '21'
+          distribution: 'temurin'
+
+      - name: Cache Gradle packages
+        uses: actions/cache@v2
+        with:
+          path: ~/.gradle/caches
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/gradle-wrapper.properties') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-
 
       - name: Build with Gradle
         run: ./gradlew build
 
-      - name: Run SonarQube Analysis
+      - name: SonarCloud Scan
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # For GitHub API access
-        run: |
-          ./gradlew sonarqube \
-            -Dsonar.projectKey=your_project_key \
-            -Dsonar.host.url=http://localhost:9000 \
-            -Dsonar.login=admin \
-            -Dsonar.password=admin  # Replace with your SonarQube credentials if necessary
-
-      - name: Wait for SonarQube to be ready
-        run: |
-          while ! curl -s http://localhost:9000/api/system/health | grep -q '"status":"OK"'; do
-            echo "Waiting for SonarQube..."
-            sleep 5
-          done
-
-      - name: Clean up
-        run: |
-          echo "Cleaning up after analysis"
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        run: ./gradlew sonarqube -Dsonar.projectKey=speltriao_tech-challenge-fiap-ms-pedido -Dsonar.organization=speltriao -Dsonar.login=$SONAR_TOKEN
