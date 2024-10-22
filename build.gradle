@@ -39,3 +39,13 @@ dependencies {
 tasks.named('test') {
 	useJUnitPlatform()
 }
+
+// SonarCloud configuration
+sonarqube {
+	properties {
+		property "sonar.host.url", "https://sonarcloud.io"
+		property "sonar.projectKey", "speltriao_tech-challenge-fiap-ms-pedido"
+		property "sonar.organization", "speltriao"
+		property "sonar.login", System.getenv("SONAR_TOKEN") // Fetching the token from environment variable
+	}
+}
