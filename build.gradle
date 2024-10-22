@@ -3,6 +3,7 @@ plugins {
 	id 'org.springframework.boot' version '3.2.5'
 	id 'io.spring.dependency-management' version '1.1.4'
 	id "io.swagger.core.v3.swagger-gradle-plugin" version "2.2.21"
+	id "org.sonarqube" version "4.3.0.3225"
 }
 
 group = 'com.fiap'
