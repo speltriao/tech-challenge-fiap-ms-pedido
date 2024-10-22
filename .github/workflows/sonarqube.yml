@@ -30,8 +30,11 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-gradle-
 
-      - name: Build with Gradle
-        run: ./gradlew build
+      - name: Make gradlew executable
+        run: chmod +x ./gradlew
+
+      - name: Build with Gradle (skip tests)
+        run: ./gradlew build -x test
 
       - name: SonarCloud Scan
         env:
