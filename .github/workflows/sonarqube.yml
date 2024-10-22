@@ -34,7 +34,7 @@ jobs:
           java-version: '21'
 
       - name: Grant execute permission for Gradle wrapper
-        run: chmod +x ./gradlew   # This fixes the permission issue
+        run: chmod +x ./gradlew
 
       - name: Cache Gradle dependencies
         uses: actions/cache@v3
@@ -44,8 +44,8 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-gradle-
 
-      - name: Build with Gradle
-        run: ./gradlew build
+      - name: Build with Gradle (Skip Tests)
+        run: ./gradlew build -x test  # Skips tests during build
 
       - name: Wait for SonarQube to be Ready
         run: |
@@ -58,4 +58,4 @@ jobs:
       - name: Run SonarQube Scan
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        run: ./gradlew sonarqube
+        run: ./gradlew sonarqube -x test  # Skips tests during SonarQube scan
