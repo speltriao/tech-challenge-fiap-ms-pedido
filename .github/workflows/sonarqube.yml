@@ -39,4 +39,4 @@ jobs:
       - name: SonarCloud Scan
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        run: ./gradlew sonarqube -Dsonar.projectKey=speltriao_tech-challenge-fiap-ms-pedido -Dsonar.organization=speltriao -Dsonar.login=$SONAR_TOKEN
+        run: ./gradlew sonar  # Change from sonarqube to sonar
