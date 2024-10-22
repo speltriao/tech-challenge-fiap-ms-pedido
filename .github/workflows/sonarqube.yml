@@ -14,7 +14,7 @@ jobs:
 
     services:
       sonarqube:
-        image: sonarqube:community
+        image: sonarqube:9.9-community  # Specify a stable version
         ports:
           - 9000:9000
         options: >-
@@ -22,6 +22,8 @@ jobs:
           --health-interval=10s
           --health-timeout=5s
           --health-retries=10
+          --memory=2g
+          --cpus=2
 
     steps:
       - name: Checkout code
@@ -45,17 +47,30 @@ jobs:
             ${{ runner.os }}-gradle-
 
       - name: Build with Gradle (Skip Tests)
-        run: ./gradlew build -x test  # Skips tests during build
+        run: ./gradlew build -x test
 
       - name: Wait for SonarQube to be Ready
         run: |
           echo "Waiting for SonarQube to be ready..."
+          count=0
           until curl -s http://localhost:9000 | grep "Welcome to SonarQube"; do
-            echo "Waiting for 10 seconds..."
+            echo "SonarQube is not ready yet. Waiting for 10 seconds..."
             sleep 10
+            count=$((count+1))
+            if [ $count -ge 60 ]; then  # Increase wait time to 10 minutes
+              echo "SonarQube did not become ready in time. Exiting."
+              exit 1
+            fi
           done
+          echo "SonarQube is ready!"
+
+      - name: Check SonarQube Logs
+        run: |
+          echo "Checking SonarQube logs..."
+          docker ps  # List running containers to find SonarQube's container ID
+          docker logs $(docker ps -q -f ancestor=sonarqube:9.9-community) || echo "No logs available"
 
       - name: Run SonarQube Scan
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        run: ./gradlew sonarqube -x test  # Skips tests during SonarQube scan
+        run: ./gradlew sonarqube -x test
