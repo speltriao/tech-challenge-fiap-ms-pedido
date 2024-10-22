@@ -33,10 +33,10 @@ jobs:
       - name: Make gradlew executable
         run: chmod +x ./gradlew
 
-      - name: Build with Gradle (skip tests)
-        run: ./gradlew build -x test
+      - name: Build with Gradle (skip tests and show warnings)
+        run: ./gradlew build -x test --warning-mode all
 
       - name: SonarCloud Scan
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        run: ./gradlew sonar  # Change from sonarqube to sonar
+        run: ./gradlew sonar  # Use sonar command for analysis
