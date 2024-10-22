@@ -39,4 +39,28 @@ jobs:
       - name: SonarCloud Scan
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        run: ./gradlew sonar  # Use sonar command for analysis
+        run: ./gradlew sonar
+
+      - name: Get SonarCloud Quality Gate Status
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        run: |
+          # Wait for a short time to ensure SonarCloud analysis is complete
+          sleep 30
+
+          # Fetch the project metrics
+          PROJECT_KEY="speltriao_tech-challenge-fiap-ms-pedido"
+          ORGANIZATION="speltriao"
+          
+          # Get coverage and warnings
+          RESPONSE=$(curl -s -u "$SONAR_TOKEN:" "https://sonarcloud.io/api/measures/component?component=${PROJECT_KEY}&metricKeys=coverage,ncloc,violations")
+
+          # Parse the response
+          COVERAGE=$(echo $RESPONSE | jq -r '.component.measures[] | select(.metric == "coverage") | .value')
+          NCLOC=$(echo $RESPONSE | jq -r '.component.measures[] | select(.metric == "ncloc") | .value')
+          VIOLATIONS=$(echo $RESPONSE | jq -r '.component.measures[] | select(.metric == "violations") | .value')
+
+          # Print the metrics
+          echo "Coverage: $COVERAGE%"
+          echo "Number of Lines of Code (ncloc): $NCLOC"
+          echo "Number of Violations: $VIOLATIONS"
