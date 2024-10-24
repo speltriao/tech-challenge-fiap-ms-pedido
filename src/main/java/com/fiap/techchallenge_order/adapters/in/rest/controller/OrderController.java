@@ -4,14 +4,12 @@ package com.fiap.techchallenge_order.adapters.in.rest.controller;
 import com.fiap.techchallenge_order.adapters.in.rest.dto.CreateOrderDTO;
 import com.fiap.techchallenge_order.adapters.in.rest.dto.OrderDTO;
 import com.fiap.techchallenge_order.adapters.in.rest.dto.OrderHistoryDTO;
-import com.fiap.techchallenge_order.adapters.in.rest.dto.UpdateOrderStatusDTO;
 import com.fiap.techchallenge_order.domain.entity.Order;
 import com.fiap.techchallenge_order.domain.entity.OrderFilters;
 import com.fiap.techchallenge_order.domain.enums.OrderSortFields;
 import com.fiap.techchallenge_order.domain.enums.OrderStatus;
 import com.fiap.techchallenge_order.domain.enums.SortDirection;
 import com.fiap.techchallenge_order.domain.exception.EntityNotFoundException;
-import com.fiap.techchallenge_order.domain.exception.OrderAlreadyWithStatusException;
 
 import com.fiap.techchallenge_order.adapters.in.rest.mapper.OrderMapper;
 import com.fiap.techchallenge_order.domain.service.OrderService;
@@ -94,7 +92,7 @@ public class OrderController {
                 .map(OrderHistoryDTO::new)
                 .toList();
     }
-
+    /*TODO: Permitir acesso a essa rota apenas por SQS
     @Operation(summary = "Create a new Order")
     @PostMapping
     public ResponseEntity<OrderDTO> createOrder(@Valid @RequestBody CreateOrderDTO request) {
@@ -109,7 +107,7 @@ public class OrderController {
                 .body(new OrderDTO(createdOrder));
     }
 
-    //TODO: Permitir acesso a essa rota apenas por SQS
+    TODO: Permitir acesso a essa rota apenas por SQS
     @Operation(summary = "Update the oder's status")
     @PatchMapping("/{id}")
     public ResponseEntity<?> updateStatus(
@@ -123,5 +121,5 @@ public class OrderController {
         if(updated) return ResponseEntity.ok().build();
         return ResponseEntity.badRequest().build();
     }
-
+    */
 }
