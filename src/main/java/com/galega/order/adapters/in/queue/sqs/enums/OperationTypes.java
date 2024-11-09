@@ -11,7 +11,6 @@ public enum OperationTypes {
 		this.status = status;
 	}
 
-
 	public String toString() {
 		return this.status;
 	}

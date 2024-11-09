@@ -26,8 +26,8 @@ public class OrderDTO {
 	private OrderStatus status;
 	private LocalDateTime createdAt;
 	private long waitingTimeInSeconds;
-	private List < ProductAndQuantity > products;
-	private List < OrderHistory > history;
+	private List <ProductAndQuantity> products;
+	private List <OrderHistory> history;
 
 	public OrderDTO(Order order) {
 		this.id = order.getId();

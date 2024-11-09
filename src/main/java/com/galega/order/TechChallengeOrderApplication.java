@@ -1,4 +1,4 @@
-package com.fiap.techchallenge_order;
+package com.galega.order;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
