@@ -1,4 +1,4 @@
-package com.fiap.techchallenge_order.adapters.in.rest.dto;
+package com.galega.order.adapters.in.rest.dto;
 
 import jakarta.annotation.Nullable;
 import jakarta.validation.Valid;

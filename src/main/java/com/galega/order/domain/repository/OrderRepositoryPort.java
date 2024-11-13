@@ -1,9 +1,11 @@
-package com.fiap.techchallenge_order.domain.repository;
+package com.galega.order.domain.repository;
 
-import com.fiap.techchallenge_order.domain.entity.Order;
-import com.fiap.techchallenge_order.domain.entity.OrderFilters;
-import com.fiap.techchallenge_order.domain.entity.OrderHistory;
-import com.fiap.techchallenge_order.domain.enums.OrderStatus;
+
+
+import com.galega.order.domain.entity.Order;
+import com.galega.order.domain.entity.OrderFilters;
+import com.galega.order.domain.entity.OrderHistory;
+import com.galega.order.domain.enums.OrderStatus;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;

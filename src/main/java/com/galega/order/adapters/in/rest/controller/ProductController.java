@@ -1,13 +1,13 @@
-package com.fiap.techchallenge_order.adapters.in.rest.controller;
+package com.galega.order.adapters.in.rest.controller;
 
 
-import com.fiap.techchallenge_order.adapters.in.rest.dto.CreateProductDTO;
-import com.fiap.techchallenge_order.adapters.in.rest.dto.ProductDTO;
-import com.fiap.techchallenge_order.adapters.in.rest.mapper.ProductMapper;
-import com.fiap.techchallenge_order.domain.entity.Product;
-import com.fiap.techchallenge_order.domain.enums.ProductCategory;
-import com.fiap.techchallenge_order.domain.service.ProductService;
-import com.fiap.techchallenge_order.domain.usecase.IProductUseCase;
+import com.galega.order.adapters.in.rest.dto.CreateProductDTO;
+import com.galega.order.adapters.in.rest.dto.ProductDTO;
+import com.galega.order.adapters.in.rest.mapper.ProductMapper;
+import com.galega.order.domain.entity.Product;
+import com.galega.order.domain.enums.ProductCategory;
+import com.galega.order.domain.service.ProductService;
+import com.galega.order.domain.usecase.IProductUseCase;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Schema;

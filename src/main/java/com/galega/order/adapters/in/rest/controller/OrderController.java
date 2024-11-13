@@ -1,25 +1,20 @@
-package com.fiap.techchallenge_order.adapters.in.rest.controller;
+package com.galega.order.adapters.in.rest.controller;
 
-
-import com.fiap.techchallenge_order.adapters.in.rest.dto.CreateOrderDTO;
-import com.fiap.techchallenge_order.adapters.in.rest.dto.OrderDTO;
-import com.fiap.techchallenge_order.adapters.in.rest.dto.OrderHistoryDTO;
-import com.fiap.techchallenge_order.domain.entity.Order;
-import com.fiap.techchallenge_order.domain.entity.OrderFilters;
-import com.fiap.techchallenge_order.domain.enums.OrderSortFields;
-import com.fiap.techchallenge_order.domain.enums.OrderStatus;
-import com.fiap.techchallenge_order.domain.enums.SortDirection;
-import com.fiap.techchallenge_order.domain.exception.EntityNotFoundException;
-
-import com.fiap.techchallenge_order.adapters.in.rest.mapper.OrderMapper;
-import com.fiap.techchallenge_order.domain.service.OrderService;
-import com.fiap.techchallenge_order.domain.usecase.IOrderUseCase;
+import com.galega.order.adapters.in.rest.dto.OrderDTO;
+import com.galega.order.adapters.in.rest.dto.OrderHistoryDTO;
+import com.galega.order.domain.entity.Order;
+import com.galega.order.domain.entity.OrderFilters;
+import com.galega.order.domain.enums.OrderSortFields;
+import com.galega.order.domain.enums.OrderStatus;
+import com.galega.order.domain.enums.SortDirection;
+import com.galega.order.domain.exception.EntityNotFoundException;
+import com.galega.order.domain.service.OrderService;
+import com.galega.order.domain.usecase.IOrderUseCase;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -92,34 +87,4 @@ public class OrderController {
                 .map(OrderHistoryDTO::new)
                 .toList();
     }
-    /*TODO: Permitir acesso a essa rota apenas por SQS
-    @Operation(summary = "Create a new Order")
-    @PostMapping
-    public ResponseEntity<OrderDTO> createOrder(@Valid @RequestBody CreateOrderDTO request) {
-        Order order = OrderMapper.toDomain(request);
-        Order createdOrder = iOrderUseCase.create(order);
-
-        if(createdOrder == null)
-            return ResponseEntity.badRequest().body(null);
-
-        return ResponseEntity
-                .status(HttpStatus.CREATED)
-                .body(new OrderDTO(createdOrder));
-    }
-
-    TODO: Permitir acesso a essa rota apenas por SQS
-    @Operation(summary = "Update the oder's status")
-    @PatchMapping("/{id}")
-    public ResponseEntity<?> updateStatus(
-            @PathVariable String id,
-            @Valid @RequestBody UpdateOrderStatusDTO request
-    ) throws OrderAlreadyWithStatusException, EntityNotFoundException {
-        var oderId = UUID.fromString(id);
-        var status = OrderStatus.fromString(request.getStatus().toUpperCase());
-        boolean updated = iOrderUseCase.updateStatus(oderId, status);
-
-        if(updated) return ResponseEntity.ok().build();
-        return ResponseEntity.badRequest().build();
-    }
-    */
 }

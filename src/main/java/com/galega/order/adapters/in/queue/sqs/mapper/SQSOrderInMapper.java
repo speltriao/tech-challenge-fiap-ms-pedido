@@ -1,8 +1,8 @@
-package com.fiap.techchallenge_order.adapters.in.queue.sqs.mapper;
+package com.galega.order.adapters.in.queue.sqs.mapper;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fiap.techchallenge_order.adapters.in.queue.sqs.dto.UpdateOrderStatusDTO;
-import com.fiap.techchallenge_order.adapters.in.rest.dto.CreateOrderDTO;
+import com.galega.order.adapters.in.queue.sqs.dto.UpdateOrderStatusDTO;
+import com.galega.order.adapters.in.rest.dto.CreateOrderDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

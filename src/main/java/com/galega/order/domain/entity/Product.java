@@ -1,7 +1,7 @@
-package com.fiap.techchallenge_order.domain.entity;
+package com.galega.order.domain.entity;
 
 
-import com.fiap.techchallenge_order.domain.enums.ProductCategory;
+import com.galega.order.domain.enums.ProductCategory;
 
 import java.math.BigDecimal;
 import java.util.UUID;

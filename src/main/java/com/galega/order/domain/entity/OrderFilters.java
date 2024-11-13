@@ -1,8 +1,9 @@
-package com.fiap.techchallenge_order.domain.entity;
+package com.galega.order.domain.entity;
 
-import com.fiap.techchallenge_order.domain.enums.OrderSortFields;
-import com.fiap.techchallenge_order.domain.enums.OrderStatus;
-import com.fiap.techchallenge_order.domain.enums.SortDirection;
+
+import com.galega.order.domain.enums.OrderSortFields;
+import com.galega.order.domain.enums.OrderStatus;
+import com.galega.order.domain.enums.SortDirection;
 
 public class OrderFilters {
 

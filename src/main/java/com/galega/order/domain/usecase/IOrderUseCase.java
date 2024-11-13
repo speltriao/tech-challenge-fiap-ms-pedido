@@ -1,12 +1,11 @@
-package com.fiap.techchallenge_order.domain.usecase;
+package com.galega.order.domain.usecase;
 
-import com.fiap.techchallenge_order.domain.entity.Order;
-import com.fiap.techchallenge_order.domain.entity.OrderFilters;
-import com.fiap.techchallenge_order.domain.entity.OrderHistory;
-import com.fiap.techchallenge_order.domain.enums.OrderStatus;
-import com.fiap.techchallenge_order.domain.exception.EntityNotFoundException;
-import com.fiap.techchallenge_order.domain.exception.OrderAlreadyWithStatusException;
-
+import com.galega.order.domain.entity.Order;
+import com.galega.order.domain.entity.OrderFilters;
+import com.galega.order.domain.entity.OrderHistory;
+import com.galega.order.domain.enums.OrderStatus;
+import com.galega.order.domain.exception.EntityNotFoundException;
+import com.galega.order.domain.exception.OrderAlreadyWithStatusException;
 
 import java.util.List;
 import java.util.UUID;

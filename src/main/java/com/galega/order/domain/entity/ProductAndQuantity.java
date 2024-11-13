@@ -1,4 +1,4 @@
-package com.fiap.techchallenge_order.domain.entity;
+package com.galega.order.domain.entity;
 
 public class ProductAndQuantity {
 

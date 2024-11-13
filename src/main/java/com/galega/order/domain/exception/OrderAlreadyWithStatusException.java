@@ -1,6 +1,7 @@
-package com.fiap.techchallenge_order.domain.exception;
+package com.galega.order.domain.exception;
 
-import com.fiap.techchallenge_order.domain.enums.OrderStatus;
+
+import com.galega.order.domain.enums.OrderStatus;
 
 import java.util.UUID;
 

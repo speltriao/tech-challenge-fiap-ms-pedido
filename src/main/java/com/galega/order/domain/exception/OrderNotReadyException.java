@@ -1,4 +1,4 @@
-package com.fiap.techchallenge_order.domain.exception;
+package com.galega.order.domain.exception;
 
 public class OrderNotReadyException extends Exception{
 

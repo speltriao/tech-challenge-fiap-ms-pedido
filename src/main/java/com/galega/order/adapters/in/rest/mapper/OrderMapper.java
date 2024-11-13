@@ -1,11 +1,11 @@
-package com.fiap.techchallenge_order.adapters.in.rest.mapper;
+package com.galega.order.adapters.in.rest.mapper;
 
-import com.fiap.techchallenge_order.adapters.in.rest.dto.CreateOrderDTO;
-import com.fiap.techchallenge_order.adapters.in.rest.dto.OrderProductDTO;
-import com.fiap.techchallenge_order.domain.entity.Order;
-import com.fiap.techchallenge_order.domain.entity.Product;
-import com.fiap.techchallenge_order.domain.entity.ProductAndQuantity;
 
+import com.galega.order.adapters.in.rest.dto.CreateOrderDTO;
+import com.galega.order.adapters.in.rest.dto.OrderProductDTO;
+import com.galega.order.domain.entity.Order;
+import com.galega.order.domain.entity.Product;
+import com.galega.order.domain.entity.ProductAndQuantity;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;

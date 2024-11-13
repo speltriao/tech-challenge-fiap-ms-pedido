@@ -1,12 +1,13 @@
-package com.fiap.techchallenge_order.adapters.out.database.postgres;
+package com.galega.order.adapters.out.database.postgres;
 
-import com.fiap.techchallenge_order.adapters.out.database.postgres.mapper.OrderMapper;
-import com.fiap.techchallenge_order.domain.entity.Order;
-import com.fiap.techchallenge_order.domain.entity.OrderFilters;
-import com.fiap.techchallenge_order.domain.entity.OrderHistory;
-import com.fiap.techchallenge_order.domain.entity.ProductAndQuantity;
-import com.fiap.techchallenge_order.domain.enums.OrderStatus;
-import com.fiap.techchallenge_order.domain.repository.OrderRepositoryPort;
+
+import com.galega.order.adapters.out.database.postgres.mapper.OrderMapper;
+import com.galega.order.domain.entity.Order;
+import com.galega.order.domain.entity.OrderFilters;
+import com.galega.order.domain.entity.OrderHistory;
+import com.galega.order.domain.entity.ProductAndQuantity;
+import com.galega.order.domain.enums.OrderStatus;
+import com.galega.order.domain.repository.OrderRepositoryPort;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;

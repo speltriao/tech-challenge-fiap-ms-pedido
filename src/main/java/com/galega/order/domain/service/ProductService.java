@@ -1,10 +1,9 @@
-package com.fiap.techchallenge_order.domain.service;
+package com.galega.order.domain.service;
 
-
-import com.fiap.techchallenge_order.adapters.out.database.postgres.ProductRepository;
-import com.fiap.techchallenge_order.domain.entity.Product;
-import com.fiap.techchallenge_order.domain.repository.ProductRepositoryPort;
-import com.fiap.techchallenge_order.domain.usecase.IProductUseCase;
+import com.galega.order.adapters.out.database.postgres.ProductRepository;
+import com.galega.order.domain.entity.Product;
+import com.galega.order.domain.repository.ProductRepositoryPort;
+import com.galega.order.domain.usecase.IProductUseCase;
 
 import javax.sql.DataSource;
 import java.math.BigDecimal;

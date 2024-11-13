@@ -1,7 +1,8 @@
-package com.fiap.techchallenge_order.adapters.in.rest.dto;
+package com.galega.order.adapters.in.rest.dto;
 
-import com.fiap.techchallenge_order.domain.entity.OrderHistory;
-import com.fiap.techchallenge_order.domain.enums.OrderStatus;
+
+import com.galega.order.domain.entity.OrderHistory;
+import com.galega.order.domain.enums.OrderStatus;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

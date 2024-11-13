@@ -1,8 +1,8 @@
-package com.fiap.techchallenge_order.adapters.in.rest.handler;
+package com.galega.order.adapters.in.rest.handler;
 
 
-import com.fiap.techchallenge_order.adapters.in.rest.dto.ErrorDTO;
-import com.fiap.techchallenge_order.domain.exception.*;
+import com.galega.order.adapters.in.rest.dto.ErrorDTO;
+import com.galega.order.domain.exception.*;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;

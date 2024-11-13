@@ -1,6 +1,6 @@
-package com.fiap.techchallenge_order.adapters.in.rest.dto;
+package com.galega.order.adapters.in.rest.dto;
 
-import com.fiap.techchallenge_order.domain.enums.ProductCategory;
+import com.galega.order.domain.enums.ProductCategory;
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
@@ -10,7 +10,7 @@ import lombok.Setter;
 
 import java.math.BigDecimal;
 
-import static com.fiap.techchallenge_order.adapters.in.rest.constants.FieldValidationConstants.NOT_BLANK;
+import static com.galega.order.adapters.in.rest.constants.FieldValidationConstants.NOT_BLANK;
 
 @Getter
 @Setter

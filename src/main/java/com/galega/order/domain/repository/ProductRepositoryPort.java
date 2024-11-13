@@ -1,6 +1,6 @@
-package com.fiap.techchallenge_order.domain.repository;
+package com.galega.order.domain.repository;
 
-import com.fiap.techchallenge_order.domain.entity.Product;
+import com.galega.order.domain.entity.Product;
 
 import java.util.List;
 import java.util.UUID;

@@ -1,7 +1,6 @@
-package com.fiap.techchallenge_order.domain.usecase;
+package com.galega.order.domain.usecase;
 
-
-import com.fiap.techchallenge_order.domain.entity.Product;
+import com.galega.order.domain.entity.Product;
 
 import java.util.List;
 

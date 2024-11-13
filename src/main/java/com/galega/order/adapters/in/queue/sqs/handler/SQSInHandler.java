@@ -1,21 +1,22 @@
 package com.galega.order.adapters.in.queue.sqs.handler;
 
 
-import com.fiap.techchallenge_order.adapters.in.queue.sqs.dto.UpdateOrderStatusDTO;
-import com.fiap.techchallenge_order.adapters.in.queue.sqs.enums.OperationTypes;
-import com.fiap.techchallenge_order.adapters.in.queue.sqs.mapper.SQSOrderInMapper;
-import com.fiap.techchallenge_order.adapters.in.rest.dto.CreateOrderDTO;
-import com.fiap.techchallenge_order.adapters.in.rest.dto.OrderDTO;
-import com.fiap.techchallenge_order.adapters.in.rest.mapper.OrderMapper;
+import com.galega.order.adapters.in.queue.sqs.dto.UpdateOrderStatusDTO;
+import com.galega.order.adapters.in.queue.sqs.enums.OperationTypes;
+import com.galega.order.adapters.in.queue.sqs.mapper.SQSOrderInMapper;
+import com.galega.order.adapters.in.rest.dto.CreateOrderDTO;
+import com.galega.order.adapters.in.rest.dto.OrderDTO;
+import com.galega.order.adapters.in.rest.mapper.OrderMapper;
 import com.galega.order.adapters.out.notification.sns.enums.ReturnTypes;
 import com.galega.order.adapters.out.notification.sns.handler.SNSOutHandler;
 import com.galega.order.adapters.out.notification.sns.mapper.SNSOrderOutMapper;
-import com.fiap.techchallenge_order.domain.entity.Order;
-import com.fiap.techchallenge_order.domain.enums.OrderStatus;
-import com.fiap.techchallenge_order.domain.exception.EntityNotFoundException;
-import com.fiap.techchallenge_order.domain.exception.OrderAlreadyWithStatusException;
-import com.fiap.techchallenge_order.domain.service.OrderService;
-import com.fiap.techchallenge_order.domain.usecase.IOrderUseCase;
+
+import com.galega.order.domain.entity.Order;
+import com.galega.order.domain.enums.OrderStatus;
+import com.galega.order.domain.exception.EntityNotFoundException;
+import com.galega.order.domain.exception.OrderAlreadyWithStatusException;
+import com.galega.order.domain.service.OrderService;
+import com.galega.order.domain.usecase.IOrderUseCase;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;

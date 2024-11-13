@@ -1,8 +1,10 @@
-package com.fiap.techchallenge_order.adapters.out.database.postgres.mapper;
+package com.galega.order.adapters.out.database.postgres.mapper;
 
-import com.fiap.techchallenge_order.domain.entity.Product;
-import com.fiap.techchallenge_order.domain.enums.ProductCategory;
+
+import com.galega.order.domain.entity.Product;
+import com.galega.order.domain.enums.ProductCategory;
 import org.springframework.jdbc.core.RowMapper;
+
 
 import java.sql.ResultSet;
 import java.sql.SQLException;

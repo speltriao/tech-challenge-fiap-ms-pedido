@@ -1,4 +1,4 @@
-package com.fiap.techchallenge_order.domain.enums;
+package com.galega.order.domain.enums;
 
 public enum OrderSortFields {
 

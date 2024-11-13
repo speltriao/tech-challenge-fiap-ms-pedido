@@ -1,4 +1,4 @@
-package com.fiap.techchallenge_order.infrastructure.database;
+package com.galega.order.database;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

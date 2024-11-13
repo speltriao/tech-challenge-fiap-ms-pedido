@@ -1,9 +1,8 @@
-package com.fiap.techchallenge_order.adapters.in.rest.mapper;
+package com.galega.order.adapters.in.rest.mapper;
 
-
-import com.fiap.techchallenge_order.adapters.in.rest.dto.CreateProductDTO;
-import com.fiap.techchallenge_order.adapters.in.rest.dto.ProductDTO;
-import com.fiap.techchallenge_order.domain.entity.Product;
+import com.galega.order.adapters.in.rest.dto.CreateProductDTO;
+import com.galega.order.adapters.in.rest.dto.ProductDTO;
+import com.galega.order.domain.entity.Product;
 
 public abstract class ProductMapper {
 

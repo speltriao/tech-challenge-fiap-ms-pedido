@@ -1,6 +1,7 @@
-package com.fiap.techchallenge_order.domain.entity;
+package com.galega.order.domain.entity;
 
-import com.fiap.techchallenge_order.domain.enums.OrderStatus;
+import com.galega.order.domain.enums.OrderStatus;
+
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;

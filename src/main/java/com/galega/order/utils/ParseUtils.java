@@ -1,4 +1,5 @@
-package com.fiap.techchallenge_order.utils;
+package com.galega.order.utils;
+
 import com.google.gson.Gson;
 
 public abstract class ParseUtils {

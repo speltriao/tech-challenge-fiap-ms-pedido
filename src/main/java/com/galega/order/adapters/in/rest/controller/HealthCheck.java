@@ -1,4 +1,4 @@
-package com.fiap.techchallenge_order.adapters.in.rest.controller;
+package com.galega.order.adapters.in.rest.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;

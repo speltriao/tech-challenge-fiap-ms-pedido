@@ -1,15 +1,14 @@
-package com.fiap.techchallenge_order.domain.service;
+package com.galega.order.domain.service;
 
-import com.fiap.techchallenge_order.adapters.out.database.postgres.OrderRepository;
-import com.fiap.techchallenge_order.domain.entity.Order;
-import com.fiap.techchallenge_order.domain.entity.OrderFilters;
-import com.fiap.techchallenge_order.domain.entity.OrderHistory;
-import com.fiap.techchallenge_order.domain.enums.OrderStatus;
-import com.fiap.techchallenge_order.domain.exception.EntityNotFoundException;
-import com.fiap.techchallenge_order.domain.exception.OrderAlreadyWithStatusException;
-import com.fiap.techchallenge_order.domain.repository.OrderRepositoryPort;
-import com.fiap.techchallenge_order.domain.usecase.IOrderUseCase;
-
+import com.galega.order.adapters.out.database.postgres.OrderRepository;
+import com.galega.order.domain.entity.Order;
+import com.galega.order.domain.entity.OrderFilters;
+import com.galega.order.domain.entity.OrderHistory;
+import com.galega.order.domain.enums.OrderStatus;
+import com.galega.order.domain.exception.EntityNotFoundException;
+import com.galega.order.domain.exception.OrderAlreadyWithStatusException;
+import com.galega.order.domain.repository.OrderRepositoryPort;
+import com.galega.order.domain.usecase.IOrderUseCase;
 
 import javax.sql.DataSource;
 import java.math.BigDecimal;
@@ -19,8 +18,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import static com.fiap.techchallenge_order.domain.enums.OrderStatus.*;
-import static com.fiap.techchallenge_order.domain.enums.OrderStatus.CREATED;
+
+import static com.galega.order.domain.enums.OrderStatus.*;
 import static java.math.RoundingMode.HALF_EVEN;
 
 public class OrderService implements IOrderUseCase {
@@ -64,7 +63,7 @@ public class OrderService implements IOrderUseCase {
 		List<Order> cleanList = orders.stream().filter(i -> i.getStatus().isDefaultListStatus()).toList();
 
 		// Separating lists by status
-		List<Order> ordersReady = filterListByStatus(cleanList, OrderStatus.READY_TO_DELIVERY);
+		List<Order> ordersReady = filterListByStatus(cleanList, READY_TO_DELIVERY);
 		List<Order> ordersInPreparation = filterListByStatus(cleanList, OrderStatus.IN_PREPARATION);
 		List<Order> ordersReceived = filterListByStatus(cleanList, OrderStatus.RECEIVED);
 
@@ -261,7 +260,7 @@ public class OrderService implements IOrderUseCase {
 
 		// Invalid states to count waiting time
 		if(status.equals(CREATED)
-				|| status.equals(OrderStatus.FINISHED)
+				|| status.equals(FINISHED)
 				|| status.equals(OrderStatus.CANCELED))
 			return 0;
 
