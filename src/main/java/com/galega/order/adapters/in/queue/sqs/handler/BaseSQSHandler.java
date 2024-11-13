@@ -1,4 +1,4 @@
-package com.fiap.techchallenge_order.adapters;
+package com.galega.order.adapters.in.queue.sqs.handler;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

@@ -1,4 +1,4 @@
-package com.fiap.techchallenge_order.adapters.out.queue.sqs.enums;
+package com.galega.order.adapters.out.notification.sns.enums;
 
 
 public enum ReturnTypes {

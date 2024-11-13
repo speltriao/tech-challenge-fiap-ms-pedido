@@ -1,9 +1,9 @@
-package com.fiap.techchallenge_order.adapters.out.queue.sqs.mapper;
+package com.galega.order.adapters.out.notification.sns.mapper;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fiap.techchallenge_order.adapters.in.rest.dto.OrderDTO;
 
-public class SQSOrderOutMapper {
+public class SNSOrderOutMapper {
 
 	private static final ObjectMapper objectMapper = new ObjectMapper();
 

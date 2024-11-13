@@ -31,6 +31,7 @@ dependencies {
 	implementation 'org.flywaydb:flyway-core'
 	implementation 'software.amazon.awssdk:sqs:2.20.58'
 	implementation 'software.amazon.awssdk:sts:2.20.58'
+	implementation 'software.amazon.awssdk:sns:2.20.58'
 	compileOnly 'org.projectlombok:lombok'
 	runtimeOnly 'org.postgresql:postgresql'
 	annotationProcessor 'org.projectlombok:lombok'

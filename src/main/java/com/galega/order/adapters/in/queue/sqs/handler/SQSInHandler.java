@@ -1,15 +1,15 @@
-package com.fiap.techchallenge_order.adapters.in.queue.sqs.handler;
+package com.galega.order.adapters.in.queue.sqs.handler;
 
-import com.fiap.techchallenge_order.adapters.BaseSQSHandler;
+
 import com.fiap.techchallenge_order.adapters.in.queue.sqs.dto.UpdateOrderStatusDTO;
 import com.fiap.techchallenge_order.adapters.in.queue.sqs.enums.OperationTypes;
 import com.fiap.techchallenge_order.adapters.in.queue.sqs.mapper.SQSOrderInMapper;
 import com.fiap.techchallenge_order.adapters.in.rest.dto.CreateOrderDTO;
 import com.fiap.techchallenge_order.adapters.in.rest.dto.OrderDTO;
 import com.fiap.techchallenge_order.adapters.in.rest.mapper.OrderMapper;
-import com.fiap.techchallenge_order.adapters.out.queue.sqs.enums.ReturnTypes;
-import com.fiap.techchallenge_order.adapters.out.queue.sqs.handler.SQSOutHandler;
-import com.fiap.techchallenge_order.adapters.out.queue.sqs.mapper.SQSOrderOutMapper;
+import com.galega.order.adapters.out.notification.sns.enums.ReturnTypes;
+import com.galega.order.adapters.out.notification.sns.handler.SNSOutHandler;
+import com.galega.order.adapters.out.notification.sns.mapper.SNSOrderOutMapper;
 import com.fiap.techchallenge_order.domain.entity.Order;
 import com.fiap.techchallenge_order.domain.enums.OrderStatus;
 import com.fiap.techchallenge_order.domain.exception.EntityNotFoundException;
@@ -40,7 +40,7 @@ public class SQSInHandler extends BaseSQSHandler {
 	}
 
 	@Autowired
-	SQSOutHandler sqsOutHandler;
+	SNSOutHandler SNSOutHandler;
 
 	@Scheduled(fixedDelay = 5000)
 	public void listenToQueue() {
@@ -94,8 +94,8 @@ public class SQSInHandler extends BaseSQSHandler {
 			if (createdOrder != null) {
 				logger.info("Order created successfully with ID: {}", createdOrder.getId());
 				var orderDTO = new OrderDTO(createdOrder);
-				var orderMessage = SQSOrderOutMapper.orderDTOtoJson(orderDTO);
-				sqsOutHandler.sendMessage(orderMessage, ReturnTypes.ORDER_CREATED) ;
+				var orderMessage = SNSOrderOutMapper.orderDTOtoJson(orderDTO);
+				SNSOutHandler.sendMessage(orderMessage, ReturnTypes.ORDER_CREATED) ;
 			} else {
 				logger.warn("Failed to create order from request: {}", request);
 			}
@@ -114,7 +114,7 @@ public class SQSInHandler extends BaseSQSHandler {
 			boolean updated = orderUseCase.updateStatus(orderId, status);
 			if (updated) {
 				logger.info("Order status updated successfully for ID: {}", orderId);
-				sqsOutHandler.sendMessage(Boolean.toString(true), ReturnTypes.ORDER_STATUS_UPDATED) ;
+				SNSOutHandler.sendMessage(Boolean.toString(true), ReturnTypes.ORDER_STATUS_UPDATED) ;
 			} else {
 				logger.warn("Failed to update status for order ID: {}", orderId);
 			}
