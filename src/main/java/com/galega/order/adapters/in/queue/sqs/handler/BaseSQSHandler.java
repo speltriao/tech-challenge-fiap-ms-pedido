@@ -2,20 +2,22 @@ package com.galega.order.adapters.in.queue.sqs.handler;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import software.amazon.awssdk.auth.credentials.EnvironmentVariableCredentialsProvider;
 import software.amazon.awssdk.services.sqs.SqsClient;
 
 
 public abstract class BaseSQSHandler {
-	private final String SQS_QUEUE_ENV = "SQS_QUEUE_URL";
+	@Value("${aws.sqs.queueUrl}")
+	protected String queueUrl;
+
 	protected final Logger logger = LoggerFactory.getLogger(getClass());
 	protected final SqsClient sqsClient;
-	protected final String queueUrl = System.getenv(SQS_QUEUE_ENV);
 
 
 	public BaseSQSHandler() {
 		if (queueUrl == null || queueUrl.isEmpty()) {
-			throw new IllegalArgumentException("SQS_QUEUE_URL environment variable is not set or is empty");
+			throw new IllegalArgumentException("aws.sqs.queueUrl environment variable is not set or is empty");
 		}
 
 		this.sqsClient = SqsClient.builder()

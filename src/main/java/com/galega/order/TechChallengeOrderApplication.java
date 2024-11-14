@@ -8,7 +8,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 @SpringBootApplication
 @EnableScheduling
 @ComponentScan(basePackages = {
-		"com.fiap.techchallenge_order.adapters"
+		"com.galega.order.adapters"
 })
 public class TechChallengeOrderApplication {
 

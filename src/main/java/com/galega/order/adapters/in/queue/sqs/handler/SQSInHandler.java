@@ -19,8 +19,14 @@ import com.galega.order.domain.service.OrderService;
 import com.galega.order.domain.usecase.IOrderUseCase;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
+import software.amazon.awssdk.auth.credentials.AwsBasicCredentials;
+import software.amazon.awssdk.auth.credentials.AwsSessionCredentials;
+import software.amazon.awssdk.auth.credentials.StaticCredentialsProvider;
+import software.amazon.awssdk.regions.Region;
+import software.amazon.awssdk.services.sqs.SqsClient;
 import software.amazon.awssdk.services.sqs.model.Message;
 import software.amazon.awssdk.services.sqs.model.ReceiveMessageRequest;
 import software.amazon.awssdk.services.sqs.model.ReceiveMessageResponse;
@@ -32,16 +38,43 @@ import java.util.UUID;
 @Component
 public class SQSInHandler extends BaseSQSHandler {
 
+	@Autowired
+	SNSOutHandler snsOutHandler;
+
+	@Value("${aws.sqs.queueUrl}")
+	protected String queueUrl;
+
+	@Value("${aws.accessKeyId}")
+	private String accessKeyId;
+
+	@Value("${aws.secretKey}")
+	private String secretKey;
+
+	@Value("${aws.sessionToken}")
+	private String sessionToken;
+
+	@Value("${aws.region}")
+	private String region;
+
 	private final int MAX_NUMBER_MESSAGES = 10;
 	private final int WAIT_TIME_SECONDS = 20;
 	private final IOrderUseCase orderUseCase;
+	private final SqsClient sqsClient;
+
 
 	public SQSInHandler(DataSource dataSource) {
 		this.orderUseCase = new OrderService(dataSource);
+
+		this.sqsClient = SqsClient.builder()
+				.credentialsProvider(StaticCredentialsProvider.create(AwsSessionCredentials.create(
+						accessKeyId,
+						secretKey,
+						sessionToken
+				)))
+				.region(Region.of(this.region))
+				.build();
 	}
 
-	@Autowired
-	SNSOutHandler SNSOutHandler;
 
 	@Scheduled(fixedDelay = 5000)
 	public void listenToQueue() {
@@ -96,7 +129,7 @@ public class SQSInHandler extends BaseSQSHandler {
 				logger.info("Order created successfully with ID: {}", createdOrder.getId());
 				var orderDTO = new OrderDTO(createdOrder);
 				var orderMessage = SNSOrderOutMapper.orderDTOtoJson(orderDTO);
-				SNSOutHandler.sendMessage(orderMessage, ReturnTypes.ORDER_CREATED) ;
+				snsOutHandler.sendMessage(orderMessage, ReturnTypes.ORDER_CREATED) ;
 			} else {
 				logger.warn("Failed to create order from request: {}", request);
 			}
@@ -115,7 +148,7 @@ public class SQSInHandler extends BaseSQSHandler {
 			boolean updated = orderUseCase.updateStatus(orderId, status);
 			if (updated) {
 				logger.info("Order status updated successfully for ID: {}", orderId);
-				SNSOutHandler.sendMessage(Boolean.toString(true), ReturnTypes.ORDER_STATUS_UPDATED) ;
+				snsOutHandler.sendMessage(Boolean.toString(true), ReturnTypes.ORDER_STATUS_UPDATED) ;
 			} else {
 				logger.warn("Failed to update status for order ID: {}", orderId);
 			}

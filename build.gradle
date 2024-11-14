@@ -6,7 +6,7 @@ plugins {
 	id "org.sonarqube" version "4.3.0.3225"
 }
 
-group = 'com.fiap'
+group = 'com.galega'
 version = '0.0.1-SNAPSHOT'
 
 java {
