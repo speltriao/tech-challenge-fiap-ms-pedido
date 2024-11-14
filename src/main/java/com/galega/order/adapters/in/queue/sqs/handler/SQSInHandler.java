@@ -1,6 +1,6 @@
 package com.galega.order.adapters.in.queue.sqs.handler;
 
-
+import com.galega.order.adapters.AppConfig;
 import com.galega.order.adapters.in.queue.sqs.dto.UpdateOrderStatusDTO;
 import com.galega.order.adapters.in.queue.sqs.enums.OperationTypes;
 import com.galega.order.adapters.in.queue.sqs.mapper.SQSOrderInMapper;
@@ -10,16 +10,15 @@ import com.galega.order.adapters.in.rest.mapper.OrderMapper;
 import com.galega.order.adapters.out.notification.sns.enums.ReturnTypes;
 import com.galega.order.adapters.out.notification.sns.handler.SNSOutHandler;
 import com.galega.order.adapters.out.notification.sns.mapper.SNSOrderOutMapper;
-
 import com.galega.order.domain.entity.Order;
 import com.galega.order.domain.enums.OrderStatus;
 import com.galega.order.domain.exception.EntityNotFoundException;
 import com.galega.order.domain.exception.OrderAlreadyWithStatusException;
 import com.galega.order.domain.service.OrderService;
 import com.galega.order.domain.usecase.IOrderUseCase;
+import jakarta.annotation.PostConstruct;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import software.amazon.awssdk.auth.credentials.AwsBasicCredentials;
@@ -41,46 +40,24 @@ public class SQSInHandler extends BaseSQSHandler {
 	@Autowired
 	SNSOutHandler snsOutHandler;
 
-	@Value("${aws.sqs.queueUrl}")
-	protected String queueUrl;
-
-	@Value("${aws.accessKeyId}")
-	private String accessKeyId;
-
-	@Value("${aws.secretKey}")
-	private String secretKey;
-
-	@Value("${aws.sessionToken}")
-	private String sessionToken;
-
-	@Value("${aws.region}")
-	private String region;
+	@Autowired
+	AppConfig appConfig;
 
 	private final int MAX_NUMBER_MESSAGES = 10;
 	private final int WAIT_TIME_SECONDS = 20;
 	private final IOrderUseCase orderUseCase;
-	private final SqsClient sqsClient;
 
+	private SqsClient sqsClient;
 
 	public SQSInHandler(DataSource dataSource) {
 		this.orderUseCase = new OrderService(dataSource);
-
-		this.sqsClient = SqsClient.builder()
-				.credentialsProvider(StaticCredentialsProvider.create(AwsSessionCredentials.create(
-						accessKeyId,
-						secretKey,
-						sessionToken
-				)))
-				.region(Region.of(this.region))
-				.build();
 	}
-
 
 	@Scheduled(fixedDelay = 5000)
 	public void listenToQueue() {
 		try {
 			ReceiveMessageRequest receiveMessageRequest = ReceiveMessageRequest.builder()
-					.queueUrl(queueUrl)
+					.queueUrl(appConfig.getSqsQueueUrl())
 					.maxNumberOfMessages(MAX_NUMBER_MESSAGES)
 					.waitTimeSeconds(WAIT_TIME_SECONDS)
 					.build();
@@ -90,32 +67,30 @@ public class SQSInHandler extends BaseSQSHandler {
 
 			for (Message message : messages) {
 				handleMessage(message);
-				sqsClient.deleteMessage(builder -> builder.queueUrl(queueUrl).receiptHandle(message.receiptHandle()).build());
+				sqsClient.deleteMessage(builder -> builder.queueUrl(appConfig.getSqsQueueUrl()).receiptHandle(message.receiptHandle()).build());
 			}
 
 		} catch (Exception e) {
-			logger.error("Error while receiving messages from SQS queue: {}", queueUrl, e);
+			logger.error("Error while receiving messages from SQS queue: {}", appConfig.getSqsQueueUrl(), e);
 		}
 	}
 
-	private void handleMessage(Message message) throws  IllegalArgumentException {
+	private void handleMessage(Message message) throws IllegalArgumentException {
 		String messageBody = message.body();
 		logger.info("Received message: {}", messageBody);
 		String messageType = message.messageAttributes().get("messageType").stringValue();
 		logger.info("Received message with type: {}", messageType);
 
-		if (StringUtils.isEmpty(messageType)){
+		if (StringUtils.isEmpty(messageType)) {
 			logger.error("Message type is empty");
 			throw new IllegalArgumentException("Message type is empty");
 		}
 
-		if (OperationTypes.UPDATE_ORDER_STATUS.toString().equals(messageType)){
+		if (OperationTypes.UPDATE_ORDER_STATUS.toString().equals(messageType)) {
 			processUpdateOrderStatus(messageBody);
-		}
-		else if (OperationTypes.CREATE_ORDER.toString().equals(messageType)){
+		} else if (OperationTypes.CREATE_ORDER.toString().equals(messageType)) {
 			processCreateOrder(messageBody);
 		}
-
 	}
 
 	private void processCreateOrder(String messageBody) {
@@ -129,7 +104,7 @@ public class SQSInHandler extends BaseSQSHandler {
 				logger.info("Order created successfully with ID: {}", createdOrder.getId());
 				var orderDTO = new OrderDTO(createdOrder);
 				var orderMessage = SNSOrderOutMapper.orderDTOtoJson(orderDTO);
-				snsOutHandler.sendMessage(orderMessage, ReturnTypes.ORDER_CREATED) ;
+				snsOutHandler.sendMessage(orderMessage, ReturnTypes.ORDER_CREATED);
 			} else {
 				logger.warn("Failed to create order from request: {}", request);
 			}
@@ -148,7 +123,7 @@ public class SQSInHandler extends BaseSQSHandler {
 			boolean updated = orderUseCase.updateStatus(orderId, status);
 			if (updated) {
 				logger.info("Order status updated successfully for ID: {}", orderId);
-				snsOutHandler.sendMessage(Boolean.toString(true), ReturnTypes.ORDER_STATUS_UPDATED) ;
+				snsOutHandler.sendMessage(Boolean.toString(true), ReturnTypes.ORDER_STATUS_UPDATED);
 			} else {
 				logger.warn("Failed to update status for order ID: {}", orderId);
 			}

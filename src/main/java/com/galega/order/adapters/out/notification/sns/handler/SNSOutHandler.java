@@ -1,10 +1,11 @@
 package com.galega.order.adapters.out.notification.sns.handler;
 
+import com.galega.order.adapters.AppConfig;
 import com.galega.order.adapters.out.notification.sns.enums.ReturnTypes;
 import jakarta.annotation.PostConstruct;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import software.amazon.awssdk.auth.credentials.AwsCredentialsProvider;
@@ -21,62 +22,36 @@ import java.util.Map;
 @Component
 public class SNSOutHandler {
 
+	@Autowired
+	private AppConfig appConfig;
+
 	private SnsClient snsClient;
-
-	@Value("${aws.sns.topicArn}")
-	private String topicArn;
-
-	@Value("${aws.accessKeyId}")
-	private String accessKeyId;
-
-	@Value("${aws.secretKey}")
-	private String secretKey;
-
-	@Value("${aws.sessionToken}")
-	private String sessionToken;
-
-	@Value("${aws.region}")
-	private String region;
 
 	private static final Logger logger = LoggerFactory.getLogger(SNSOutHandler.class);
 
-	public SNSOutHandler() {
-		// The constructor should be lightweight, and the properties will be set later by Spring.
-		this.snsClient = null; // Initialize snsClient to null; it will be properly initialized later.
-	}
-
 	@PostConstruct
-	public void init() {
-		// Ensure the property values are set and non-empty
-		if (topicArn == null || topicArn.trim().isEmpty()) {
-			throw new IllegalArgumentException("aws.sns.topicArn property is not set or is empty");
-		}
-
-		if (accessKeyId == null || accessKeyId.trim().isEmpty() ||
-				secretKey == null || secretKey.trim().isEmpty() ||
-				sessionToken == null || sessionToken.trim().isEmpty() ||
-				region == null || region.trim().isEmpty()) {
-			throw new IllegalArgumentException("AWS credentials or region are not set in properties");
-		}
+	private void init() {
+		String region = appConfig.getRegion();
+		logger.info("Using region: {}", region);  // Log the region to ensure it is correct
 
 		AwsCredentialsProvider credentialsProvider = StaticCredentialsProvider.create(AwsSessionCredentials.create(
-				accessKeyId,
-				secretKey,
-				sessionToken
+				appConfig.getAccessKeyId(),
+				appConfig.getSecretKey(),
+				appConfig.getSessionToken()
 		));
 
 		this.snsClient = SnsClient.builder()
 				.credentialsProvider(credentialsProvider)
-				.region(Region.of(region))
+				.region(Region.of(appConfig.getRegion()))
 				.build();
 
-		logger.info("SNS client initialized with topic ARN: {}", topicArn);
+		logger.info("SNS client initialized with topic ARN: {}", appConfig.getSnsTopicArn());
 	}
 
 	public void sendMessage(String messageBody, ReturnTypes returnType) {
 		try {
 			PublishRequest publishRequest = PublishRequest.builder()
-					.topicArn(topicArn)
+					.topicArn(appConfig.getSnsTopicArn())
 					.message(messageBody)
 					.messageAttributes(Map.of(
 							"messageType", MessageAttributeValue.builder()
@@ -90,7 +65,7 @@ public class SNSOutHandler {
 			logger.info("Notification sent successfully with ID: {}", publishResponse.messageId());
 
 		} catch (Exception e) {
-			logger.error("Failed to send notification to SNS topic: {}", topicArn, e);
+			logger.error("Failed to send notification to SNS topic: {}", appConfig.getSnsTopicArn(), e);
 		}
 	}
 }
