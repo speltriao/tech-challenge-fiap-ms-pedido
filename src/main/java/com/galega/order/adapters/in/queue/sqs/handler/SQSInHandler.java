@@ -16,15 +16,10 @@ import com.galega.order.domain.exception.EntityNotFoundException;
 import com.galega.order.domain.exception.OrderAlreadyWithStatusException;
 import com.galega.order.domain.service.OrderService;
 import com.galega.order.domain.usecase.IOrderUseCase;
-import jakarta.annotation.PostConstruct;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
-import software.amazon.awssdk.auth.credentials.AwsBasicCredentials;
-import software.amazon.awssdk.auth.credentials.AwsSessionCredentials;
-import software.amazon.awssdk.auth.credentials.StaticCredentialsProvider;
-import software.amazon.awssdk.regions.Region;
 import software.amazon.awssdk.services.sqs.SqsClient;
 import software.amazon.awssdk.services.sqs.model.Message;
 import software.amazon.awssdk.services.sqs.model.ReceiveMessageRequest;
@@ -47,8 +42,6 @@ public class SQSInHandler extends BaseSQSHandler {
 	private final int WAIT_TIME_SECONDS = 20;
 	private final IOrderUseCase orderUseCase;
 
-	private SqsClient sqsClient;
-
 	public SQSInHandler(DataSource dataSource) {
 		this.orderUseCase = new OrderService(dataSource);
 	}
@@ -56,9 +49,11 @@ public class SQSInHandler extends BaseSQSHandler {
 	@Scheduled(fixedDelay = 5000)
 	public void listenToQueue() {
 		try {
+			logger.info("appConfig.getSqsQueueUrl(): {}", appConfig.getSqsQueueUrl());
 			ReceiveMessageRequest receiveMessageRequest = ReceiveMessageRequest.builder()
 					.queueUrl(appConfig.getSqsQueueUrl())
 					.maxNumberOfMessages(MAX_NUMBER_MESSAGES)
+					.messageAttributeNames("messageType")
 					.waitTimeSeconds(WAIT_TIME_SECONDS)
 					.build();
 
@@ -78,18 +73,35 @@ public class SQSInHandler extends BaseSQSHandler {
 	private void handleMessage(Message message) throws IllegalArgumentException {
 		String messageBody = message.body();
 		logger.info("Received message: {}", messageBody);
-		String messageType = message.messageAttributes().get("messageType").stringValue();
-		logger.info("Received message with type: {}", messageType);
 
-		if (StringUtils.isEmpty(messageType)) {
+		var messageAttribute = message.messageAttributes();
+		if (messageAttribute == null){
+			logger.error("Message attribute is invalid");
+			throw new IllegalArgumentException("Message attribute is invalid");
+		}
+
+		logger.info("messageAttribute: {}", messageAttribute);
+		var messageType = messageAttribute.get("messageType");
+		if (messageType == null) {
+			logger.error("Message Type is null");
+			throw new IllegalArgumentException("Message Type is null");
+		}
+
+		var messageTypeValue = messageType.stringValue();
+		if (StringUtils.isEmpty(messageTypeValue)) {
 			logger.error("Message type is empty");
 			throw new IllegalArgumentException("Message type is empty");
 		}
 
-		if (OperationTypes.UPDATE_ORDER_STATUS.toString().equals(messageType)) {
+		if (OperationTypes.UPDATE_ORDER_STATUS.toString().equals(messageTypeValue)) {
+			logger.info("UPDATE_ORDER_STATUS");
 			processUpdateOrderStatus(messageBody);
-		} else if (OperationTypes.CREATE_ORDER.toString().equals(messageType)) {
+		} else if (OperationTypes.CREATE_ORDER.toString().equals(messageTypeValue)) {
+			logger.info("CREATE_ORDER");
 			processCreateOrder(messageBody);
+		} else {
+			logger.error("Message type {} is invalid", messageTypeValue);
+			throw new IllegalArgumentException("Message type " + messageTypeValue + " is invalid");
 		}
 	}
 
