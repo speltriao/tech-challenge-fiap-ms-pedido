@@ -12,8 +12,8 @@ import org.springframework.stereotype.Component;
 public class AppConfig {
 
 	private String region;
-	private String snsTopicArn;
-	private String sqsQueueUrl;
+	private String sqsOutputQueueUrl;
+	private String sqsInputQueueUrl;
 	private String accessKeyId;
 	private String secretKey;
 	private String sessionToken;

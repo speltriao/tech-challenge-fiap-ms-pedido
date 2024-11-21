@@ -1,6 +1,5 @@
-package com.galega.order.adapters.in.queue.sqs.handler;
+package com.galega.order.adapters;
 
-import com.galega.order.adapters.AppConfig;
 import jakarta.annotation.PostConstruct;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,13 +12,12 @@ import software.amazon.awssdk.services.sqs.SqsClient;
 public abstract class BaseSQSHandler {
 
 	@Autowired
-	private AppConfig appConfig;
+	protected AppConfig appConfig;
 
 	protected final Logger logger = LoggerFactory.getLogger(getClass());
 	protected SqsClient sqsClient;
 
-	public BaseSQSHandler() {
-	}
+	public BaseSQSHandler() {}
 
 	@PostConstruct
 	private void init() {
@@ -32,6 +30,6 @@ public abstract class BaseSQSHandler {
 				.region(Region.of(appConfig.getRegion()))
 				.build();
 
-		logger.info("SQS client initialized with queue URL: {}", appConfig.getSqsQueueUrl());
+		logger.info("SQS client initialized with queue URL: {}", appConfig.getSqsInputQueueUrl());
 	}
 }

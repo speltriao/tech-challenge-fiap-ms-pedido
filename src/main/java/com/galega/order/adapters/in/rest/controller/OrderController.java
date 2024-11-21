@@ -1,7 +1,9 @@
 package com.galega.order.adapters.in.rest.controller;
 
+import com.galega.order.adapters.in.rest.dto.CreateOrderDTO;
 import com.galega.order.adapters.in.rest.dto.OrderDTO;
 import com.galega.order.adapters.in.rest.dto.OrderHistoryDTO;
+import com.galega.order.adapters.in.rest.mapper.OrderMapper;
 import com.galega.order.domain.entity.Order;
 import com.galega.order.domain.entity.OrderFilters;
 import com.galega.order.domain.enums.OrderSortFields;
@@ -15,6 +17,7 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -68,6 +71,21 @@ public class OrderController {
 
     private boolean orderHasNoParameters(String status, String orderBy, String direction) {
         return status == null && orderBy == null && direction == null;
+    }
+
+    @Operation(summary = "Create a new Order")
+    @PostMapping
+    public ResponseEntity<OrderDTO> createOrder(@Valid @RequestBody CreateOrderDTO request) throws EntityNotFoundException
+    {
+        Order order = OrderMapper.toDomain(request);
+        Order createdOrder = iOrderUseCase.create(order);
+
+        if(createdOrder == null)
+            return ResponseEntity.badRequest().body(null);
+
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .body(new OrderDTO(createdOrder));
     }
 
     @Operation(summary = "Get all details of an order")
