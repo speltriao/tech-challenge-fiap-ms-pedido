@@ -29,7 +29,5 @@ public abstract class BaseSQSHandler {
 				)))
 				.region(Region.of(appConfig.getRegion()))
 				.build();
-
-		logger.info("SQS client initialized with queue URL: {}", appConfig.getSqsInputQueueUrl());
 	}
 }

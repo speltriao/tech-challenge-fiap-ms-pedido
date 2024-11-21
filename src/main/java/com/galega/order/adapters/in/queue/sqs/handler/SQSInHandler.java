@@ -42,7 +42,6 @@ public class SQSInHandler extends BaseSQSHandler {
 			ReceiveMessageRequest receiveMessageRequest = ReceiveMessageRequest.builder()
 					.queueUrl(appConfig.getSqsInputQueueUrl())
 					.maxNumberOfMessages(MAX_NUMBER_MESSAGES)
-					.messageAttributeNames("messageType")
 					.waitTimeSeconds(WAIT_TIME_SECONDS)
 					.build();
 
