@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @Tag(name = "Health Check Controller")
 @RestController
-public class HealthCheck {
+public class HealthCheckController {
 	@Operation(summary = "Healthcheck")
 	@GetMapping("/ping")
 	public ResponseEntity<String> pong(){
