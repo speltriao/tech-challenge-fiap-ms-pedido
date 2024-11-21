@@ -1,4 +1,4 @@
-package com.galega.order.database;
+package com.galega.order.adapters.out.database.postgres;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

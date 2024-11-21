@@ -18,7 +18,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-
 import static com.galega.order.domain.enums.OrderStatus.*;
 import static java.math.RoundingMode.HALF_EVEN;
 

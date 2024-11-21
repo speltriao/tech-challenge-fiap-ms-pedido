@@ -1,7 +1,7 @@
 package com.galega.order.adapters.out.queue.sqs.mapper;
+
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.galega.order.adapters.in.rest.dto.OrderDTO;
 import com.galega.order.adapters.out.queue.sqs.dto.PaymentDTO;
 
 import java.util.UUID;
