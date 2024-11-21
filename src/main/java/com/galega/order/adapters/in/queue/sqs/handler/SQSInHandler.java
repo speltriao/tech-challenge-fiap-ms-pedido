@@ -73,7 +73,7 @@ public class SQSInHandler extends BaseSQSHandler {
 			boolean updated = orderUseCase.updateStatus(orderId, status);
 			if (updated) {
 				logger.info("Order status updated successfully for ID: {}", orderId);
-				SQSOutHandler.sendMessage(orderId, ReturnTypes.ORDER_STATUS_UPDATED);
+				SQSOutHandler.sendMessage(orderId, status);
 			} else {
 				logger.warn("Failed to update status for order ID: {}", orderId);
 			}
