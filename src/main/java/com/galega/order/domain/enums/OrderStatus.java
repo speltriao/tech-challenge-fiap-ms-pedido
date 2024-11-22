@@ -2,8 +2,8 @@ package com.galega.order.domain.enums;
 
 public enum OrderStatus {
 
-    CREATED ("CREATED"),
-    RECEIVED ("RECEIVED"),
+    CREATED ("CREATED"), //PEDIDO RECEBIDO
+    RECEIVED ("RECEIVED"), //PAGO
     IN_PREPARATION ("IN_PREPARATION"),
     READY_TO_DELIVERY ("READY_TO_DELIVERY"),
     CANCELED ("CANCELED"),
@@ -11,7 +11,7 @@ public enum OrderStatus {
 
     private final String status;
 
-    private OrderStatus(String status){
+    OrderStatus(String status){
         this.status = status;
     }
 

@@ -1,11 +1,10 @@
 package com.galega.order.adapters.in.queue.sqs.handler;
 
 import com.galega.order.adapters.BaseSQSHandler;
-import com.galega.order.adapters.in.queue.sqs.dto.UpdateOrderStatusDTO;
 import com.galega.order.adapters.in.queue.sqs.mapper.SQSOrderInMapper;
-import com.galega.order.adapters.out.queue.sqs.enums.ReturnTypes;
 import com.galega.order.adapters.out.queue.sqs.handler.SQSOutHandler;
 import com.galega.order.domain.enums.OrderStatus;
+import com.galega.order.domain.enums.PaymentStatus;
 import com.galega.order.domain.exception.EntityNotFoundException;
 import com.galega.order.domain.exception.OrderAlreadyWithStatusException;
 import com.galega.order.domain.service.OrderService;
@@ -15,17 +14,15 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import software.amazon.awssdk.services.sqs.model.Message;
 import software.amazon.awssdk.services.sqs.model.ReceiveMessageRequest;
-import software.amazon.awssdk.services.sqs.model.ReceiveMessageResponse;
 
 import javax.sql.DataSource;
 import java.util.List;
-import java.util.UUID;
 
 @Component
 public class SQSInHandler extends BaseSQSHandler {
 
 	@Autowired
-	SQSOutHandler SQSOutHandler;
+	SQSOutHandler sqsOutHandler;
 
 	private final int MAX_NUMBER_MESSAGES = 10;
 	private final int WAIT_TIME_SECONDS = 20;
@@ -45,7 +42,7 @@ public class SQSInHandler extends BaseSQSHandler {
 					.waitTimeSeconds(WAIT_TIME_SECONDS)
 					.build();
 
-			ReceiveMessageResponse receiveMessageResponse = sqsClient.receiveMessage(receiveMessageRequest);
+			var receiveMessageResponse = sqsClient.receiveMessage(receiveMessageRequest);
 			List<Message> messages = receiveMessageResponse.messages();
 
 			for (Message message : messages) {
@@ -59,26 +56,30 @@ public class SQSInHandler extends BaseSQSHandler {
 	}
 
 	private void handleMessage(Message message) throws IllegalArgumentException {
-		String messageBody = message.body();
+		var messageBody = message.body();
 		logger.info("Received message: {}", messageBody);
-		processUpdateOrderStatus(messageBody);
+		processOrderPayment(messageBody);
 	}
 
-	private void processUpdateOrderStatus(String messageBody) {
-		UpdateOrderStatusDTO request = SQSOrderInMapper.mapUpdateOrderStatusDTO(messageBody);
-		UUID orderId = UUID.fromString(request.getId());
-		OrderStatus status = OrderStatus.fromString(request.getStatus().toUpperCase());
+	private void processOrderPayment(String messageBody) {
+		var paymentRequest = SQSOrderInMapper.mapUpdateOrderStatusDTO(messageBody);
+		var orderId = paymentRequest.getOrderId();
+		var orderWasPaid = paymentRequest.getStatus() == PaymentStatus.APPROVED;
 
-		try {
-			boolean updated = orderUseCase.updateStatus(orderId, status);
-			if (updated) {
-				logger.info("Order status updated successfully for ID: {}", orderId);
-				SQSOutHandler.sendMessage(orderId, status);
-			} else {
-				logger.warn("Failed to update status for order ID: {}", orderId);
+		if (orderWasPaid){
+			try {
+				var updated = orderUseCase.updateStatus(orderId, OrderStatus.RECEIVED);
+				if (updated) {
+					logger.info("Order status updated successfully for ID: {}", orderId);
+				} else {
+					logger.warn("Failed to update status for order ID: {}", orderId);
+				}
+			} catch (OrderAlreadyWithStatusException | EntityNotFoundException e) {
+				logger.error("Error updating order status for ID: {}", orderId, e);
+
 			}
-		} catch (OrderAlreadyWithStatusException | EntityNotFoundException e) {
-			logger.error("Error updating order status for ID: {}", orderId, e);
+			return;
 		}
+		logger.error("Order: {} was NOT paid", orderId);
 	}
 }

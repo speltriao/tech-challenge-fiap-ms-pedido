@@ -1,4 +1,4 @@
-package com.galega.order.adapters.in.queue.sqs.dto;
+package com.galega.order.adapters.in.rest.dto;
 
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -12,10 +12,7 @@ import lombok.Setter;
 @AllArgsConstructor
 public class UpdateOrderStatusDTO {
 
-    @NotNull(message = "Field 'status' is mandatory")
-    private String status;
-
-    @NotNull(message = "Field 'ID' is mandatory")
-    private String id;
+	@NotNull(message = "Field 'status' is mandatory")
+	private String status;
 
 }
