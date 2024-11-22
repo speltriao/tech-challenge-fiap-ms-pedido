@@ -3,7 +3,7 @@ spring:
     name: tech-challenge-fiap
   datasource:
     driver-class-name: org.postgresql.Driver
-    url: jdbc:postgresql://postgres:5432/galega_burguer
+    url: jdbc:postgresql://postgres:5432/galega
     username: postgres
     password: postgres
     hikari:
