@@ -3,8 +3,6 @@ package com.galega.order.adapters.in.queue.sqs.handler;
 import com.galega.order.adapters.BaseSQSHandler;
 import com.galega.order.adapters.in.queue.sqs.mapper.SQSOrderInMapper;
 import com.galega.order.adapters.out.queue.sqs.handler.SQSOutHandler;
-import com.galega.order.domain.enums.OrderStatus;
-import com.galega.order.domain.enums.PaymentStatus;
 import com.galega.order.domain.exception.EntityNotFoundException;
 import com.galega.order.domain.exception.OrderAlreadyWithStatusException;
 import com.galega.order.domain.service.OrderService;
@@ -64,22 +62,20 @@ public class SQSInHandler extends BaseSQSHandler {
 	private void processOrderPayment(String messageBody) {
 		var paymentRequest = SQSOrderInMapper.mapUpdateOrderStatusDTO(messageBody);
 		var orderId = paymentRequest.getOrderId();
-		var orderWasPaid = paymentRequest.getStatus() == PaymentStatus.APPROVED;
+		var paymentStatus = paymentRequest.getStatus();
 
-		if (orderWasPaid){
-			try {
-				var updated = orderUseCase.updateStatus(orderId, OrderStatus.RECEIVED);
-				if (updated) {
-					logger.info("Order status updated successfully for ID: {}", orderId);
-				} else {
-					logger.warn("Failed to update status for order ID: {}", orderId);
-				}
-			} catch (OrderAlreadyWithStatusException | EntityNotFoundException e) {
-				logger.error("Error updating order status for ID: {}", orderId, e);
-
+		try {
+			var updated = orderUseCase.processOrderPayment(orderId, paymentStatus);
+			if (updated) {
+				logger.info("Order status updated successfully for ID: {}", orderId);
 			}
-			return;
+			else {
+				logger.warn("Order: {} was NOT paid to be updated", orderId);
+			}
+		} catch (OrderAlreadyWithStatusException | EntityNotFoundException e) {
+			logger.error("Error updating order status for ID: {}", orderId, e);
+
 		}
-		logger.error("Order: {} was NOT paid", orderId);
+
 	}
 }

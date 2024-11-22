@@ -5,6 +5,7 @@ import com.galega.order.domain.entity.Order;
 import com.galega.order.domain.entity.OrderFilters;
 import com.galega.order.domain.entity.OrderHistory;
 import com.galega.order.domain.enums.OrderStatus;
+import com.galega.order.domain.enums.PaymentStatus;
 import com.galega.order.domain.exception.EntityNotFoundException;
 import com.galega.order.domain.exception.OrderAlreadyWithStatusException;
 import com.galega.order.domain.repository.OrderRepositoryPort;
@@ -21,7 +22,7 @@ import java.util.UUID;
 import static com.galega.order.domain.enums.OrderStatus.*;
 import static java.math.RoundingMode.HALF_EVEN;
 
-public class OrderService implements IOrderUseCase {
+public class OrderService implements IOrderUseCase{
 
 
 	OrderRepositoryPort IOrderRepository;
@@ -56,7 +57,7 @@ public class OrderService implements IOrderUseCase {
 	 * @return: the filtered list of orders
 	 */
 	@Override
-	public List<Order> getDefaultListOrders() {
+	public List<Order> getDefaultListOrders(){
 		var orders = IOrderRepository.getAll(null);
 		// List with only READY_TO_DELIVERY, IN_PREPARATION and RECEIVED status
 		List<Order> cleanList = orders.stream().filter(i -> i.getStatus().isDefaultListStatus()).toList();
@@ -80,7 +81,7 @@ public class OrderService implements IOrderUseCase {
 	 * @param status the status to be filtered
 	 * @return the list of orders filtered by the status
 	 */
-	private List<Order> filterListByStatus(List<Order> orders, OrderStatus status) {
+	private List<Order> filterListByStatus(List<Order> orders, OrderStatus status){
 		return orders.stream().filter(i -> i.getStatus().equals(status)).toList();
 	}
 
@@ -89,7 +90,7 @@ public class OrderService implements IOrderUseCase {
 	 * @param orders the list of orders that will have the time calculated
 	 * @return the list of orders with time calculated in seconds
 	 */
-	private List<Order> calculateOrdersWaitTime(List<Order> orders) {
+	private List<Order> calculateOrdersWaitTime(List<Order> orders){
 
 		if(!orders.isEmpty()) {
 			for (Order order : orders) {
@@ -108,8 +109,7 @@ public class OrderService implements IOrderUseCase {
 	 * @throws EntityNotFoundException
 	 */
 	@Override
-	public Order get(UUID id) throws EntityNotFoundException
-	{
+	public Order get(UUID id) throws EntityNotFoundException{
 		var order = IOrderRepository.getByIdWithProducts(id);
 
 		if(order == null) throw new EntityNotFoundException("Order", id);
@@ -161,8 +161,7 @@ public class OrderService implements IOrderUseCase {
 	 * @throws EntityNotFoundException
 	 */
 	@Override
-	public List<OrderHistory> getOrderHistory(UUID id) throws EntityNotFoundException
-	{
+	public List<OrderHistory> getOrderHistory(UUID id) throws EntityNotFoundException{
 		var history = IOrderRepository.getOrderHistoryByOrderId(id);
 		if(history == null) throw new EntityNotFoundException("Order", id);
 
@@ -178,15 +177,13 @@ public class OrderService implements IOrderUseCase {
 	 */
 
 	@Override
-	public boolean updateStatus(UUID id, OrderStatus status) throws OrderAlreadyWithStatusException, EntityNotFoundException
-	{
+	public boolean updateStatus(UUID id, OrderStatus status) throws OrderAlreadyWithStatusException, EntityNotFoundException{
 		var order = IOrderRepository.getById(id);
 
 		// Order Not Found in Database
 		if(order == null) throw new EntityNotFoundException("Order", id);
 
 		switch (status) {
-
 			// Invalid Status from Payload
 			case null: {
 				throw new IllegalArgumentException("Status cannot be null and must be a valid status: CREATED, " +
@@ -236,7 +233,6 @@ public class OrderService implements IOrderUseCase {
 			default: {
 				break;
 			}
-
 		}
 
 		// Order with the same status
@@ -246,6 +242,15 @@ public class OrderService implements IOrderUseCase {
 		return IOrderRepository.updateStatus(order, status, order.getStatus()) == 2;
 	}
 
+	@Override
+	public boolean processOrderPayment(UUID orderId, PaymentStatus paymentStatus) throws OrderAlreadyWithStatusException, EntityNotFoundException {
+		var wasOrderPaid = paymentStatus == PaymentStatus.APPROVED;
+		if (wasOrderPaid){
+			updateStatus(orderId, RECEIVED);
+			return true;
+		}
+		return false;
+	}
 
 
 	/**
@@ -253,8 +258,7 @@ public class OrderService implements IOrderUseCase {
 	 * @param order: The Oder that will have the time waiting calculated
 	 * @return the total time of wait in seconds
 	 */
-	private long calculateWaitTime(Order order)
-	{
+	private long calculateWaitTime(Order order){
 		OrderStatus status = order.getStatus();
 
 		// Invalid states to count waiting time

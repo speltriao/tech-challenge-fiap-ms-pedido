@@ -4,6 +4,7 @@ import com.galega.order.domain.entity.Order;
 import com.galega.order.domain.entity.OrderFilters;
 import com.galega.order.domain.entity.OrderHistory;
 import com.galega.order.domain.enums.OrderStatus;
+import com.galega.order.domain.enums.PaymentStatus;
 import com.galega.order.domain.exception.EntityNotFoundException;
 import com.galega.order.domain.exception.OrderAlreadyWithStatusException;
 
@@ -23,4 +24,5 @@ public interface IOrderUseCase {
     List<OrderHistory> getOrderHistory(UUID id) throws EntityNotFoundException;
 
     boolean updateStatus(UUID id, OrderStatus status) throws OrderAlreadyWithStatusException, EntityNotFoundException;
+    boolean processOrderPayment(UUID orderId, PaymentStatus paymentStatus) throws OrderAlreadyWithStatusException, EntityNotFoundException;
 }
