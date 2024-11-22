@@ -1,0 +1,37 @@
+name: Deploy Application
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v3
+
+      - name: Set up JDK
+        uses: actions/setup-java@v3
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+
+      - name: Build with Gradle
+        run: ./gradlew build
+
+      - name: Deploy Application
+        env:
+          AWS_REGION: ${{ secrets.AWS_REGION }}
+          AWS_SQS_OUTPUT_QUEUE_URL: ${{ secrets.AWS_SQS_OUTPUT_QUEUE_URL }}
+          AWS_SQS_INPUT_QUEUE_URL: ${{ secrets.AWS_SQS_INPUT_QUEUE_URL }}
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_SESSION_TOKEN: ${{ secrets.AWS_SESSION_TOKEN }}
+          SPRING_DATASOURCE_URL: jdbc:postgresql://${{ secrets.DB_HOST }}:5432/galega_burguer
+          SPRING_DATASOURCE_USERNAME: ${{ secrets.DB_USER }}
+          SPRING_DATASOURCE_PASSWORD: ${{ secrets.DB_PASSWORD }}
+        run: |
+          java -jar build/libs/order.jar
