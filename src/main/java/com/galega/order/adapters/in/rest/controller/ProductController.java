@@ -5,7 +5,7 @@ import com.galega.order.adapters.in.rest.dto.CreateProductDTO;
 import com.galega.order.adapters.in.rest.dto.ProductDTO;
 import com.galega.order.adapters.in.rest.mapper.ProductMapper;
 import com.galega.order.domain.entity.Product;
-import com.galega.order.domain.enums.ProductCategory;
+import com.galega.order.domain.enums.ProductCategoryEnum;
 import com.galega.order.domain.service.ProductService;
 import com.galega.order.domain.usecase.IProductUseCase;
 import io.swagger.v3.oas.annotations.Operation;
@@ -34,16 +34,16 @@ public class ProductController {
   @GetMapping
     @Operation(
         summary = "List all storage products",
-        parameters = {@Parameter(name = "category", schema = @Schema(implementation = ProductCategory.class))}
+        parameters = {@Parameter(name = "category", schema = @Schema(implementation = ProductCategoryEnum.class))}
     )
     public ResponseEntity<List<Product>> getProducts(@RequestParam(required = false) String category)
     {
 
-        ProductCategory productCategory = category != null
-                ? ProductCategory.valueOf(category.toUpperCase())
+        ProductCategoryEnum productCategoryEnum = category != null
+                ? ProductCategoryEnum.valueOf(category.toUpperCase())
                 : null;
 
-        Product.ProductFilters filters = new Product.ProductFilters(productCategory);
+        Product.ProductFilters filters = new Product.ProductFilters(productCategoryEnum);
         var products = productService.getAllProducts(filters);
 
         if(products.isEmpty()) {

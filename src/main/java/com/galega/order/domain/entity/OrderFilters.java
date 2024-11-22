@@ -1,45 +1,45 @@
 package com.galega.order.domain.entity;
 
 
-import com.galega.order.domain.enums.OrderSortFields;
-import com.galega.order.domain.enums.OrderStatus;
-import com.galega.order.domain.enums.SortDirection;
+import com.galega.order.domain.enums.OrderSortFieldsEnum;
+import com.galega.order.domain.enums.OrderStatusEnum;
+import com.galega.order.domain.enums.SortDirectionEnum;
 
 public class OrderFilters {
 
-    private OrderStatus status;
-    private OrderSortFields orderBy;
-    private SortDirection direction;
+    private OrderStatusEnum status;
+    private OrderSortFieldsEnum orderBy;
+    private SortDirectionEnum direction;
 
     public OrderFilters() {}
 
-    public OrderFilters(OrderStatus status, OrderSortFields orderBy, SortDirection direction) {
+    public OrderFilters(OrderStatusEnum status, OrderSortFieldsEnum orderBy, SortDirectionEnum direction) {
         this.status = status;
         this.orderBy = orderBy;
         this.direction = direction;
     }
 
-    public OrderStatus getStatus() {
+    public OrderStatusEnum getStatus() {
         return status;
     }
 
-    public void setStatus(OrderStatus status) {
+    public void setStatus(OrderStatusEnum status) {
         this.status = status;
     }
 
-    public OrderSortFields getOrderBy() {
+    public OrderSortFieldsEnum getOrderBy() {
         return orderBy;
     }
 
-    public void setOrderBy(OrderSortFields orderBy) {
+    public void setOrderBy(OrderSortFieldsEnum orderBy) {
         this.orderBy = orderBy;
     }
 
-    public SortDirection getDirection() {
+    public SortDirectionEnum getDirection() {
         return direction;
     }
 
-    public void setDirection(SortDirection direction) {
+    public void setDirection(SortDirectionEnum direction) {
         this.direction = direction;
     }
 

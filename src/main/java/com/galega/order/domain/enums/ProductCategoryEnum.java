@@ -2,7 +2,7 @@ package com.galega.order.domain.enums;
 
 import org.springframework.util.StringUtils;
 
-public enum ProductCategory {
+public enum ProductCategoryEnum {
 
     SANDWICH ("SANDWICH"),
     SIDE_DISH ("SIDE_DISH"),
@@ -11,14 +11,14 @@ public enum ProductCategory {
 
     private final String value;
 
-    private ProductCategory(String status){
+    private ProductCategoryEnum(String status){
         this.value = status;
     }
 
-    public static ProductCategory fromString(String status){
+    public static ProductCategoryEnum fromString(String status){
         if(!StringUtils.hasText(status)) return null;
 
-        for(ProductCategory category : values()){
+        for(ProductCategoryEnum category : values()){
             if(category.value.equals(status))
                 return category;
         }

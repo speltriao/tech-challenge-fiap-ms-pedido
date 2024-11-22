@@ -8,9 +8,9 @@ import com.galega.order.adapters.in.rest.mapper.OrderMapper;
 import com.galega.order.adapters.out.queue.sqs.handler.SQSOutHandler;
 import com.galega.order.domain.entity.Order;
 import com.galega.order.domain.entity.OrderFilters;
-import com.galega.order.domain.enums.OrderSortFields;
-import com.galega.order.domain.enums.OrderStatus;
-import com.galega.order.domain.enums.SortDirection;
+import com.galega.order.domain.enums.OrderSortFieldsEnum;
+import com.galega.order.domain.enums.OrderStatusEnum;
+import com.galega.order.domain.enums.SortDirectionEnum;
 import com.galega.order.domain.exception.EntityNotFoundException;
 import com.galega.order.domain.exception.OrderAlreadyWithStatusException;
 import com.galega.order.domain.service.OrderService;
@@ -47,9 +47,9 @@ public class OrderController {
     @Operation(
             summary = "List all orders based on query filters",
             parameters = {
-                    @Parameter(name = "status", schema = @Schema(implementation = OrderStatus.class)),
-                    @Parameter(name = "orderBy", schema = @Schema(implementation = OrderSortFields.class)),
-                    @Parameter(name = "orderDirection", schema = @Schema(implementation = SortDirection.class)),
+                    @Parameter(name = "status", schema = @Schema(implementation = OrderStatusEnum.class)),
+                    @Parameter(name = "orderBy", schema = @Schema(implementation = OrderSortFieldsEnum.class)),
+                    @Parameter(name = "orderDirection", schema = @Schema(implementation = SortDirectionEnum.class)),
             })
     @GetMapping
     public ResponseEntity<List<OrderDTO>> getOrders(
@@ -61,9 +61,9 @@ public class OrderController {
 
 
         OrderFilters filters = new OrderFilters();
-        filters.setStatus(OrderStatus.fromString(status));
-        filters.setOrderBy(OrderSortFields.fromString(orderBy));
-        filters.setDirection(SortDirection.fromString(orderDirection == null ? "ASC" : orderDirection));
+        filters.setStatus(OrderStatusEnum.fromString(status));
+        filters.setOrderBy(OrderSortFieldsEnum.fromString(orderBy));
+        filters.setDirection(SortDirectionEnum.fromString(orderDirection == null ? "ASC" : orderDirection));
         List<Order> orders = (orderHasNoParameters(status, orderBy, orderDirection))
                 ? iOrderUseCase.getDefaultListOrders()
                 : iOrderUseCase.getAll(filters);
@@ -111,7 +111,7 @@ public class OrderController {
             @Valid @RequestBody UpdateOrderStatusDTO request
     ) throws OrderAlreadyWithStatusException, EntityNotFoundException {
         var oderId = UUID.fromString(id);
-        var status = OrderStatus.fromString(request.getStatus().toUpperCase());
+        var status = OrderStatusEnum.fromString(request.getStatus().toUpperCase());
         boolean updated = iOrderUseCase.updateStatus(oderId, status);
 
         if(updated) return ResponseEntity.ok().build();

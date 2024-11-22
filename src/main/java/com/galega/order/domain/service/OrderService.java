@@ -4,8 +4,8 @@ import com.galega.order.adapters.out.database.postgres.OrderRepository;
 import com.galega.order.domain.entity.Order;
 import com.galega.order.domain.entity.OrderFilters;
 import com.galega.order.domain.entity.OrderHistory;
-import com.galega.order.domain.enums.OrderStatus;
-import com.galega.order.domain.enums.PaymentStatus;
+import com.galega.order.domain.enums.OrderStatusEnum;
+import com.galega.order.domain.enums.PaymentStatusEnum;
 import com.galega.order.domain.exception.EntityNotFoundException;
 import com.galega.order.domain.exception.OrderAlreadyWithStatusException;
 import com.galega.order.domain.repository.OrderRepositoryPort;
@@ -19,7 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import static com.galega.order.domain.enums.OrderStatus.*;
+import static com.galega.order.domain.enums.OrderStatusEnum.*;
 import static java.math.RoundingMode.HALF_EVEN;
 
 public class OrderService implements IOrderUseCase{
@@ -64,8 +64,8 @@ public class OrderService implements IOrderUseCase{
 
 		// Separating lists by status
 		List<Order> ordersReady = filterListByStatus(cleanList, READY_TO_DELIVERY);
-		List<Order> ordersInPreparation = filterListByStatus(cleanList, OrderStatus.IN_PREPARATION);
-		List<Order> ordersReceived = filterListByStatus(cleanList, OrderStatus.RECEIVED);
+		List<Order> ordersInPreparation = filterListByStatus(cleanList, OrderStatusEnum.IN_PREPARATION);
+		List<Order> ordersReceived = filterListByStatus(cleanList, OrderStatusEnum.RECEIVED);
 
 		List<Order> ordersFinalList = new ArrayList<>();
 		ordersFinalList.addAll(ordersReady);
@@ -81,7 +81,7 @@ public class OrderService implements IOrderUseCase{
 	 * @param status the status to be filtered
 	 * @return the list of orders filtered by the status
 	 */
-	private List<Order> filterListByStatus(List<Order> orders, OrderStatus status){
+	private List<Order> filterListByStatus(List<Order> orders, OrderStatusEnum status){
 		return orders.stream().filter(i -> i.getStatus().equals(status)).toList();
 	}
 
@@ -177,7 +177,7 @@ public class OrderService implements IOrderUseCase{
 	 */
 
 	@Override
-	public boolean updateStatus(UUID id, OrderStatus status) throws OrderAlreadyWithStatusException, EntityNotFoundException{
+	public boolean updateStatus(UUID id, OrderStatusEnum status) throws OrderAlreadyWithStatusException, EntityNotFoundException{
 		var order = IOrderRepository.getById(id);
 
 		// Order Not Found in Database
@@ -243,8 +243,8 @@ public class OrderService implements IOrderUseCase{
 	}
 
 	@Override
-	public boolean processOrderPayment(UUID orderId, PaymentStatus paymentStatus) throws OrderAlreadyWithStatusException, EntityNotFoundException {
-		var wasOrderPaid = paymentStatus == PaymentStatus.APPROVED;
+	public boolean processOrderPayment(UUID orderId, PaymentStatusEnum paymentStatusEnum) throws OrderAlreadyWithStatusException, EntityNotFoundException {
+		var wasOrderPaid = paymentStatusEnum == PaymentStatusEnum.APPROVED;
 		if (wasOrderPaid){
 			updateStatus(orderId, RECEIVED);
 			return true;
@@ -259,12 +259,12 @@ public class OrderService implements IOrderUseCase{
 	 * @return the total time of wait in seconds
 	 */
 	private long calculateWaitTime(Order order){
-		OrderStatus status = order.getStatus();
+		OrderStatusEnum status = order.getStatus();
 
 		// Invalid states to count waiting time
 		if(status.equals(CREATED)
 				|| status.equals(FINISHED)
-				|| status.equals(OrderStatus.CANCELED))
+				|| status.equals(OrderStatusEnum.CANCELED))
 			return 0;
 
 		// Error retrieving paid at date

@@ -2,7 +2,7 @@ package com.galega.order.adapters.in.rest.dto;
 
 
 import com.galega.order.domain.entity.OrderHistory;
-import com.galega.order.domain.enums.OrderStatus;
+import com.galega.order.domain.enums.OrderStatusEnum;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -15,8 +15,8 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 public class OrderHistoryDTO {
-	private OrderStatus previousStatus;
-	private OrderStatus lastStatus;
+	private OrderStatusEnum previousStatus;
+	private OrderStatusEnum lastStatus;
 	private LocalDateTime moment;
 
 	public OrderHistoryDTO(OrderHistory orderHistory){

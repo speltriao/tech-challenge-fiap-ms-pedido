@@ -1,37 +1,37 @@
 package com.galega.order.domain.entity;
 
 
-import com.galega.order.domain.enums.OrderStatus;
+import com.galega.order.domain.enums.OrderStatusEnum;
 
 import java.time.LocalDateTime;
 
 public class OrderHistory {
 
-    private OrderStatus previousStatus;
-    private OrderStatus lastStatus;
+    private OrderStatusEnum previousStatus;
+    private OrderStatusEnum lastStatus;
     private LocalDateTime moment;
 
     public OrderHistory() {}
 
-    public OrderHistory(OrderStatus previousStatus, OrderStatus lastStatus, LocalDateTime moment) {
+    public OrderHistory(OrderStatusEnum previousStatus, OrderStatusEnum lastStatus, LocalDateTime moment) {
         this.previousStatus = previousStatus;
         this.lastStatus = lastStatus;
         this.moment = moment;
     }
 
-    public OrderStatus getPreviousStatus() {
+    public OrderStatusEnum getPreviousStatus() {
         return previousStatus;
     }
 
-    public void setPreviousStatus(OrderStatus previousStatus) {
+    public void setPreviousStatus(OrderStatusEnum previousStatus) {
         this.previousStatus = previousStatus;
     }
 
-    public OrderStatus getLastStatus() {
+    public OrderStatusEnum getLastStatus() {
         return lastStatus;
     }
 
-    public void setLastStatus(OrderStatus lastStatus) {
+    public void setLastStatus(OrderStatusEnum lastStatus) {
         this.lastStatus = lastStatus;
     }
 

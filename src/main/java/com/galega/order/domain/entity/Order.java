@@ -1,6 +1,6 @@
 package com.galega.order.domain.entity;
 
-import com.galega.order.domain.enums.OrderStatus;
+import com.galega.order.domain.enums.OrderStatusEnum;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -17,7 +17,7 @@ public class Order {
 
     private BigDecimal amount;
 
-    private OrderStatus status;
+    private OrderStatusEnum status;
 
     private LocalDateTime createdAt;
 
@@ -32,7 +32,7 @@ public class Order {
 
     public Order() {}
 
-    public Order(UUID id, UUID customerId, Integer orderNumber, BigDecimal amount, OrderStatus status, LocalDateTime createdAt, long waitingTimeInSeconds, List<ProductAndQuantity> products, List<OrderHistory> history, LocalDateTime paidAt) {
+    public Order(UUID id, UUID customerId, Integer orderNumber, BigDecimal amount, OrderStatusEnum status, LocalDateTime createdAt, long waitingTimeInSeconds, List<ProductAndQuantity> products, List<OrderHistory> history, LocalDateTime paidAt) {
         this.id = id;
         this.customerId = customerId;
         this.orderNumber = orderNumber;
@@ -77,11 +77,11 @@ public class Order {
         this.amount = amount;
     }
 
-    public OrderStatus getStatus() {
+    public OrderStatusEnum getStatus() {
         return status;
     }
 
-    public void setStatus(OrderStatus status) {
+    public void setStatus(OrderStatusEnum status) {
         this.status = status;
     }
 

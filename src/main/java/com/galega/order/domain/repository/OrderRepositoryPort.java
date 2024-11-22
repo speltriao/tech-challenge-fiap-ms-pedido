@@ -5,7 +5,7 @@ package com.galega.order.domain.repository;
 import com.galega.order.domain.entity.Order;
 import com.galega.order.domain.entity.OrderFilters;
 import com.galega.order.domain.entity.OrderHistory;
-import com.galega.order.domain.enums.OrderStatus;
+import com.galega.order.domain.enums.OrderStatusEnum;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -24,5 +24,5 @@ public interface OrderRepositoryPort {
 
     int create(Order order);
 
-    int updateStatus(Order order, OrderStatus newStatus, OrderStatus previousStatus);
+    int updateStatus(Order order, OrderStatusEnum newStatus, OrderStatusEnum previousStatus);
 }

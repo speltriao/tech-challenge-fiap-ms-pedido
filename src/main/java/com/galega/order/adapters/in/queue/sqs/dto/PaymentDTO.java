@@ -1,6 +1,6 @@
 package com.galega.order.adapters.in.queue.sqs.dto;
 
-import com.galega.order.domain.enums.PaymentStatus;
+import com.galega.order.domain.enums.PaymentStatusEnum;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -17,7 +17,7 @@ public class PaymentDTO {
     private BigDecimal amount;
     private String gateway;
     private String externalId;
-    private PaymentStatus status;
+    private PaymentStatusEnum status;
     private UUID id;
     private UUID orderId;
 }

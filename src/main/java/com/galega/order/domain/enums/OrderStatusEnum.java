@@ -1,6 +1,6 @@
 package com.galega.order.domain.enums;
 
-public enum OrderStatus {
+public enum OrderStatusEnum {
 
     CREATED ("CREATED"), //PEDIDO RECEBIDO
     RECEIVED ("RECEIVED"), //PAGO
@@ -11,16 +11,16 @@ public enum OrderStatus {
 
     private final String status;
 
-    OrderStatus(String status){
+    OrderStatusEnum(String status){
         this.status = status;
     }
 
-    public static OrderStatus fromString(String status){
+    public static OrderStatusEnum fromString(String status){
         if(status == null) return null;
 
-        for(OrderStatus orderStatus : values()){
-            if(orderStatus.status.equals(status.toUpperCase()))
-                return orderStatus;
+        for(OrderStatusEnum orderStatusEnum : values()){
+            if(orderStatusEnum.status.equals(status.toUpperCase()))
+                return orderStatusEnum;
         }
 
         return null;

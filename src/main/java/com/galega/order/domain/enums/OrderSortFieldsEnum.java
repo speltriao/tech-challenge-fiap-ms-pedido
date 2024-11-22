@@ -1,6 +1,6 @@
 package com.galega.order.domain.enums;
 
-public enum OrderSortFields {
+public enum OrderSortFieldsEnum {
 
     CREATED_AT ("CREATED_AT"),
     ORDER_NUMBER ("ORDER_NUMBER"),
@@ -8,14 +8,14 @@ public enum OrderSortFields {
 
     private final String value;
 
-    private OrderSortFields(String value){
+    private OrderSortFieldsEnum(String value){
         this.value = value;
     }
 
-    public static OrderSortFields fromString(String value){
+    public static OrderSortFieldsEnum fromString(String value){
         if(value == null) return null;
 
-        for(OrderSortFields field : values()){
+        for(OrderSortFieldsEnum field : values()){
             if(field.value.equals(value.toUpperCase()))
                 return field;
         }

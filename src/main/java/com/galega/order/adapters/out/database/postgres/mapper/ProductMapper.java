@@ -2,7 +2,7 @@ package com.galega.order.adapters.out.database.postgres.mapper;
 
 
 import com.galega.order.domain.entity.Product;
-import com.galega.order.domain.enums.ProductCategory;
+import com.galega.order.domain.enums.ProductCategoryEnum;
 import org.springframework.jdbc.core.RowMapper;
 
 import java.sql.ResultSet;
@@ -20,7 +20,7 @@ public abstract class ProductMapper {
             product.setDescription(rs.getString("description"));
             product.setImageUrl(rs.getString("image_url"));
             product.setPrice(rs.getBigDecimal("price"));
-            product.setCategory(ProductCategory.valueOf(rs.getString("category")));
+            product.setCategory(ProductCategoryEnum.valueOf(rs.getString("category")));
             return product;
         }
     };

@@ -11,8 +11,8 @@ import org.springframework.stereotype.Component;
 @ConfigurationProperties(prefix = "aws")
 public class AppConfig {
 
-	private String region;
-	private String sqsOutputQueueUrl;
+	private String region; //Fila onde as mensagens serão publicadas
+	private String sqsOutputQueueUrl; //Fila que escuta o SNS
 	private String sqsInputQueueUrl;
 	private String accessKeyId;
 	private String secretKey;

@@ -1,6 +1,6 @@
 package com.galega.order.domain.enums;
 
-public enum PaymentStatus {
+public enum PaymentStatusEnum {
 	PENDING ("PENDING"),
 	REFUSED ("REFUSED"),
 	APPROVED ("APPROVED"),
@@ -8,7 +8,7 @@ public enum PaymentStatus {
 
 	private final String status;
 
-	PaymentStatus(String status){
+	PaymentStatusEnum(String status){
 		this.status = status;
 	}
 

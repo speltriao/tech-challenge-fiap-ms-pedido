@@ -5,8 +5,8 @@ import com.galega.order.domain.entity.Order;
 import com.galega.order.domain.entity.OrderHistory;
 import com.galega.order.domain.entity.Product;
 import com.galega.order.domain.entity.ProductAndQuantity;
-import com.galega.order.domain.enums.OrderStatus;
-import com.galega.order.domain.enums.ProductCategory;
+import com.galega.order.domain.enums.OrderStatusEnum;
+import com.galega.order.domain.enums.ProductCategoryEnum;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.util.StringUtils;
 
@@ -39,7 +39,7 @@ public abstract class OrderMapper {
                 int quantity = rs.getInt("quantity");
                 temp.setId(UUID.fromString(rs.getString("product_id")));
                 temp.setName(rs.getString("name"));
-                temp.setCategory(ProductCategory.fromString(rs.getString("category")));
+                temp.setCategory(ProductCategoryEnum.fromString(rs.getString("category")));
                 temp.setPrice(rs.getBigDecimal("price"));
                 temp.setDescription(rs.getString("description"));
                 temp.setImageUrl(rs.getString("image_url"));
@@ -55,8 +55,8 @@ public abstract class OrderMapper {
         @Override
         public OrderHistory mapRow(ResultSet rs, int rowNum) throws SQLException {
             OrderHistory record = new OrderHistory();
-            record.setLastStatus(OrderStatus.fromString(rs.getString("new_status")));
-            record.setPreviousStatus(OrderStatus.fromString(rs.getString("previous_status")));
+            record.setLastStatus(OrderStatusEnum.fromString(rs.getString("new_status")));
+            record.setPreviousStatus(OrderStatusEnum.fromString(rs.getString("previous_status")));
             record.setMoment(rs.getTimestamp("moment").toLocalDateTime());
 
             return record;
@@ -74,7 +74,7 @@ public abstract class OrderMapper {
             order.setPaidAt(rs.getTimestamp("paid_at").toLocalDateTime());
 
         order.setAmount(rs.getBigDecimal("amount"));
-        order.setStatus(OrderStatus.fromString(rs.getString("status")));
+        order.setStatus(OrderStatusEnum.fromString(rs.getString("status")));
         return order;
     }
 

@@ -1,7 +1,7 @@
 package com.galega.order.domain.entity;
 
 
-import com.galega.order.domain.enums.ProductCategory;
+import com.galega.order.domain.enums.ProductCategoryEnum;
 
 import java.math.BigDecimal;
 import java.util.UUID;
@@ -18,13 +18,13 @@ public class Product {
 
     private BigDecimal price;
 
-    private ProductCategory category;
+    private ProductCategoryEnum category;
 
     public Product(UUID id) {
         this.id = id;
     }
 
-    public Product(UUID id, String name, String description, String imageUrl, BigDecimal price, ProductCategory category) {
+    public Product(UUID id, String name, String description, String imageUrl, BigDecimal price, ProductCategoryEnum category) {
         this.id = id;
         this.name = name;
         this.description = description;
@@ -75,29 +75,29 @@ public class Product {
         this.price = price;
     }
 
-    public ProductCategory getCategory() {
+    public ProductCategoryEnum getCategory() {
         return category;
     }
 
-    public void setCategory(ProductCategory category) {
+    public void setCategory(ProductCategoryEnum category) {
         this.category = category;
     }
 
     public static class ProductFilters {
 
-        private ProductCategory category;
+        private ProductCategoryEnum category;
 
-        public ProductFilters(ProductCategory category) {
+        public ProductFilters(ProductCategoryEnum category) {
             this.category = category;
         }
 
         public ProductFilters() {}
 
-        public ProductCategory getCategory() {
+        public ProductCategoryEnum getCategory() {
             return category;
         }
 
-        public void setCategory(ProductCategory category) {
+        public void setCategory(ProductCategoryEnum category) {
             this.category = category;
         }
     }

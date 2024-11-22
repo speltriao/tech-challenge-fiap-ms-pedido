@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.galega.order.domain.entity.Order;
 import com.galega.order.domain.entity.OrderHistory;
 import com.galega.order.domain.entity.ProductAndQuantity;
-import com.galega.order.domain.enums.OrderStatus;
+import com.galega.order.domain.enums.OrderStatusEnum;
 import lombok.*;
 
 import java.math.BigDecimal;
@@ -23,7 +23,7 @@ public class OrderDTO {
 	private UUID customerId;
 	private Integer orderNumber;
 	private BigDecimal amount;
-	private OrderStatus status;
+	private OrderStatusEnum status;
 	private LocalDateTime createdAt;
 	private long waitingTimeInSeconds;
 	private List <ProductAndQuantity> products;

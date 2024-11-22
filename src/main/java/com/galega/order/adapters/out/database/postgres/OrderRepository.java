@@ -6,7 +6,7 @@ import com.galega.order.domain.entity.Order;
 import com.galega.order.domain.entity.OrderFilters;
 import com.galega.order.domain.entity.OrderHistory;
 import com.galega.order.domain.entity.ProductAndQuantity;
-import com.galega.order.domain.enums.OrderStatus;
+import com.galega.order.domain.enums.OrderStatusEnum;
 import com.galega.order.domain.repository.OrderRepositoryPort;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -100,7 +100,7 @@ public class OrderRepository implements OrderRepositoryPort {
     }
 
     @Override
-    public int updateStatus(Order order, OrderStatus newStatus, OrderStatus previousStatus) {
+    public int updateStatus(Order order, OrderStatusEnum newStatus, OrderStatusEnum previousStatus) {
         LocalDateTime now = LocalDateTime.now();
         String updateStatusSQL = "UPDATE public.order SET status = ?, paid_at = ? WHERE id = ?";
         String relationInsertSQL = "INSERT INTO public.order_history (order_id, previous_status, new_status, moment) VALUES (?, ?, ?, ?)";
