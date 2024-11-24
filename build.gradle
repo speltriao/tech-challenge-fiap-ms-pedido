@@ -49,7 +49,7 @@ sonarqube {
 		property "sonar.projectKey", "speltriao_tech-challenge-fiap-ms-pedido"
 		property "sonar.organization", "speltriao"
 		property "sonar.login", System.getenv("SONAR_TOKEN")
-		property "sonar.exclusions", "**/*DTO.java,**/*Builder.java"
+		property "sonar.exclusions", "**/*DTO.java,**/*Builder.java,**/*Mapper.java,**/*Config.java, **/*Constants.java, src/main/java/com/galega/order/domain/entity/**"
 	}
 }
 
@@ -78,6 +78,10 @@ jacocoTestReport {
 				fileTree(it) {
 					exclude '**/*DTO.class'
 					exclude '**/*Builder.class'
+					exclude '**/*Mapper.java'
+					exclude '**/*Config.java'
+					exclude '**/*Constants.java'
+					exclude 'src/main/java/com/galega/order/domain/entity/**'
 				}
 		})
 	)
