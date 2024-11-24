@@ -1,5 +1,6 @@
 package com.galega.order.adapters.out.queue.sqs.handler;
 
+import com.galega.order.adapters.AppConfig;
 import com.galega.order.adapters.BaseSQSHandler;
 import com.galega.order.adapters.in.rest.dto.OrderDTO;
 import com.galega.order.adapters.out.queue.sqs.mapper.OrderOutputMapper;
@@ -17,7 +18,7 @@ public class SQSOutHandler extends BaseSQSHandler {
 	public void sendOrderMessage(OrderDTO order) {
 		try {
 			SendMessageRequest sendMessageRequest = SendMessageRequest.builder()
-					.queueUrl(appConfig.sqsOutputQueueUrl)
+					.queueUrl(AppConfig.sqsOutputQueueUrl)
 					.messageBody(OrderOutputMapper.orderDTOtoJson(order))
 					.messageAttributes(Map.of(
 							"messageType", MessageAttributeValue.builder()
@@ -31,7 +32,7 @@ public class SQSOutHandler extends BaseSQSHandler {
 
 			logger.info("Message sent successfully to SQS with ID: {}", response.messageId());
 		} catch (Exception e) {
-			logger.error("Failed to send message to SQS queue: {}", appConfig.sqsOutputQueueUrl, e);
+			logger.error("Failed to send message to SQS queue: {}", AppConfig.sqsOutputQueueUrl, e);
 		}
 	}
 }

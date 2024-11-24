@@ -11,9 +11,6 @@ import software.amazon.awssdk.services.sqs.SqsClient;
 
 public abstract class BaseSQSHandler {
 
-	@Autowired
-	protected AppConfig appConfig;
-
 	protected final Logger logger = LoggerFactory.getLogger(getClass());
 	protected SqsClient sqsClient;
 
@@ -23,11 +20,11 @@ public abstract class BaseSQSHandler {
 	private void init() {
 		this.sqsClient = SqsClient.builder()
 				.credentialsProvider(StaticCredentialsProvider.create(AwsSessionCredentials.create(
-						appConfig.accessKeyId,
-						appConfig.secretKey,
-						appConfig.sessionToken
+						AppConfig.accessKeyId,
+						AppConfig.secretKey,
+						AppConfig.sessionToken
 				)))
-				.region(Region.of(appConfig.region))
+				.region(Region.of(AppConfig.region))
 				.build();
 	}
 }

@@ -1,5 +1,6 @@
 package com.galega.order.adapters.in.queue.sqs.handler;
 
+import com.galega.order.adapters.AppConfig;
 import com.galega.order.adapters.BaseSQSHandler;
 import com.galega.order.adapters.in.queue.sqs.mapper.SQSOrderInMapper;
 import com.galega.order.adapters.out.queue.sqs.handler.SQSOutHandler;
@@ -33,9 +34,9 @@ public class SQSInHandler extends BaseSQSHandler {
 	@Scheduled(fixedDelay = 5000)
 	public void listenToQueue() {
 		try {
-			logger.info("appConfig.getSqsQueueUrl(): {}", appConfig.sqsInputQueueUrl);
+			logger.info("appConfig.getSqsQueueUrl(): {}", AppConfig.sqsInputQueueUrl);
 			ReceiveMessageRequest receiveMessageRequest = ReceiveMessageRequest.builder()
-					.queueUrl(appConfig.sqsInputQueueUrl)
+					.queueUrl(AppConfig.sqsInputQueueUrl)
 					.maxNumberOfMessages(MAX_NUMBER_MESSAGES)
 					.waitTimeSeconds(WAIT_TIME_SECONDS)
 					.build();
@@ -45,11 +46,11 @@ public class SQSInHandler extends BaseSQSHandler {
 
 			for (Message message : messages) {
 				handleMessage(message);
-				sqsClient.deleteMessage(builder -> builder.queueUrl(appConfig.sqsInputQueueUrl).receiptHandle(message.receiptHandle()).build());
+				sqsClient.deleteMessage(builder -> builder.queueUrl(AppConfig.sqsInputQueueUrl).receiptHandle(message.receiptHandle()).build());
 			}
 
 		} catch (Exception e) {
-			logger.error("Error while receiving messages from SQS queue: {}", appConfig.sqsInputQueueUrl, e);
+			logger.error("Error while receiving messages from SQS queue: {}", AppConfig.sqsInputQueueUrl, e);
 		}
 	}
 
