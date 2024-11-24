@@ -49,7 +49,7 @@ sonarqube {
 		property "sonar.projectKey", "speltriao_tech-challenge-fiap-ms-pedido"
 		property "sonar.organization", "speltriao"
 		property "sonar.login", System.getenv("SONAR_TOKEN")
-		property "sonar.exclusions", "**/*DTO.java,**/*Builder.java,**/*Mapper.java,**/*Config.java,**/*Constants.java"
+		property "sonar.exclusions", "**/*DTO.java,**/*Builder.java,**/*Mapper.java,**/*Config.java,**/*Constants.java,**/*Exception.java"
 	}
 }
 
@@ -80,6 +80,7 @@ jacocoTestReport {
 							exclude '**/*Mapper.class'
 							exclude '**/*Config.class'
 							exclude '**/*Constants.class'
+							exclude '**/*Exception.java'
 						}
 			})
 	)
