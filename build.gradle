@@ -1,5 +1,6 @@
 plugins {
 	id 'java'
+	id 'jacoco'
 	id 'org.springframework.boot' version '3.2.5'
 	id 'io.spring.dependency-management' version '1.1.4'
 	id "io.swagger.core.v3.swagger-gradle-plugin" version "2.2.21"
@@ -42,12 +43,30 @@ tasks.named('test') {
 	useJUnitPlatform()
 }
 
-// SonarCloud configuration
 sonarqube {
 	properties {
 		property "sonar.host.url", "https://sonarcloud.io"
 		property "sonar.projectKey", "speltriao_tech-challenge-fiap-ms-pedido"
 		property "sonar.organization", "speltriao"
-		property "sonar.login", System.getenv("SONAR_TOKEN") // Fetching the token from environment variable
+		property "sonar.login", System.getenv("SONAR_TOKEN")
+	}
+}
+
+jacoco {
+	toolVersion = '0.8.9'
+	reportsDirectory = layout.buildDirectory.dir('customJacocoReportDir')
+}
+
+test {
+	useJUnitPlatform()
+	finalizedBy jacocoTestReport
+}
+
+jacocoTestReport {
+	dependsOn test
+	reports {
+		xml.required = true
+		html.outputLocation = layout.buildDirectory.dir('jacocoHtml')
+		csv.required = false
 	}
 }
