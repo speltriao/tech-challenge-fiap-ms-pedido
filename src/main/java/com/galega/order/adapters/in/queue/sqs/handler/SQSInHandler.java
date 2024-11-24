@@ -45,8 +45,8 @@ public class SQSInHandler extends BaseSQSHandler {
 			List<Message> messages = receiveMessageResponse.messages();
 
 			for (Message message : messages) {
-				handleMessage(message);
 				sqsClient.deleteMessage(builder -> builder.queueUrl(AppConfig.sqsInputQueueUrl).receiptHandle(message.receiptHandle()).build());
+				handleMessage(message);
 			}
 
 		} catch (Exception e) {
@@ -75,7 +75,6 @@ public class SQSInHandler extends BaseSQSHandler {
 			}
 		} catch (OrderAlreadyWithStatusException | EntityNotFoundException e) {
 			logger.error("Error updating order status for ID: {}", orderId, e);
-
 		}
 
 	}
