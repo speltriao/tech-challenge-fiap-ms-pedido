@@ -49,10 +49,9 @@ sonarqube {
 		property "sonar.projectKey", "speltriao_tech-challenge-fiap-ms-pedido"
 		property "sonar.organization", "speltriao"
 		property "sonar.login", System.getenv("SONAR_TOKEN")
-		property "sonar.exclusions", "**/*DTO.java,**/*Builder.java,**/*Mapper.java,**/*Config.java, **/*Constants.java, src/main/java/com/galega/order/domain/entity/**"
+		property "sonar.exclusions", "**/*DTO.java,**/*Builder.java,**/*Mapper.java,**/*Config.java,**/*Constants.java"
 	}
 }
-
 
 jacoco {
 	toolVersion = '0.8.9'
@@ -72,18 +71,16 @@ jacocoTestReport {
 		csv.required = false
 	}
 	classDirectories.setFrom(
-		files(classDirectories.files.collect {
-			it.isDirectory() ?
-				it :
-				fileTree(it) {
-					exclude '**/*DTO.class'
-					exclude '**/*Builder.class'
-					exclude '**/*Mapper.java'
-					exclude '**/*Config.java'
-					exclude '**/*Constants.java'
-					exclude 'src/main/java/com/galega/order/domain/entity/**'
-				}
-		})
+			files(classDirectories.files.collect {
+				it.isDirectory() ?
+						it :
+						fileTree(it) {
+							exclude '**/*DTO.class'
+							exclude '**/*Builder.class'
+							exclude '**/*Mapper.class'
+							exclude '**/*Config.class'
+							exclude '**/*Constants.class'
+						}
+			})
 	)
-
 }
