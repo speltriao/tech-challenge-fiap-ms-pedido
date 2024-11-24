@@ -20,10 +20,19 @@ public class DatabaseConfiguration {
   public DataSource dataSource() {
     DriverManagerDataSource dataSource = new DriverManagerDataSource();
     dataSource.setDriverClassName("org.postgresql.Driver");
-    dataSource.setUrl(env.getProperty("spring.datasource.url"));
-    dataSource.setUsername(env.getProperty("spring.datasource.username"));
-    dataSource.setPassword(env.getProperty("spring.datasource.password"));
+
+    String dbHost = System.getenv("DB_HOST");
+    String dbUser = System.getenv("DB_USER");
+    String dbPassword = System.getenv("DB_PASSWORD");
+
+    String jdbcUrl = String.format("jdbc:postgresql://%s:5432/galega", dbHost);
+
+    dataSource.setUrl(jdbcUrl);
+    dataSource.setUsername(dbUser);
+    dataSource.setPassword(dbPassword);
+
     return dataSource;
   }
+
 
 }
