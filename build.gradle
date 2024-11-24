@@ -49,8 +49,10 @@ sonarqube {
 		property "sonar.projectKey", "speltriao_tech-challenge-fiap-ms-pedido"
 		property "sonar.organization", "speltriao"
 		property "sonar.login", System.getenv("SONAR_TOKEN")
+		property "sonar.exclusions", "**/*DTO.java,**/*Builder.java"
 	}
 }
+
 
 jacoco {
 	toolVersion = '0.8.9'
@@ -69,4 +71,15 @@ jacocoTestReport {
 		html.outputLocation = layout.buildDirectory.dir('jacocoHtml')
 		csv.required = false
 	}
+	classDirectories.setFrom(
+		files(classDirectories.files.collect {
+			it.isDirectory() ?
+				it :
+				fileTree(it) {
+					exclude '**/*DTO.class'
+					exclude '**/*Builder.class'
+				}
+		})
+	)
+
 }
