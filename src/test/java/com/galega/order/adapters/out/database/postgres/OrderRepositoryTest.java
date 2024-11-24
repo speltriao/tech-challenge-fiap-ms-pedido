@@ -1,13 +1,18 @@
 package com.galega.order.adapters.out.database.postgres;
 
+import com.galega.order.adapters.in.queue.sqs.handler.SQSInHandler;
+import com.galega.order.adapters.out.queue.sqs.handler.SQSOutHandler;
 import com.galega.order.domain.entity.*;
 import com.galega.order.domain.enums.OrderStatusEnum;
+import com.galega.order.domain.enums.ProductCategoryEnum;
+import org.apache.commons.lang3.RandomStringUtils;
 import org.flywaydb.core.Flyway;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
@@ -25,6 +30,12 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 @Import(DataBaseTestConfig.class)
 public class OrderRepositoryTest {
 
+	@MockBean
+	private SQSInHandler sqsInHandler;
+
+	@MockBean
+	private SQSOutHandler sqsOutHandler;
+
 	@Autowired
 	@Qualifier("testDataSource")
 	private DataSource testDataSource;
@@ -34,11 +45,13 @@ public class OrderRepositoryTest {
 	private Flyway flyway;
 
 	private OrderRepository orderRepository;
+	private ProductRepository productRepository;
+
 
 	@BeforeEach
 	void setUp() {
-		// Initialize the repository and ensure the database is migrated before each test
 		orderRepository = new OrderRepository(testDataSource);
+		productRepository = new ProductRepository(testDataSource);
 		flyway.clean();
 		flyway.migrate();
 	}
@@ -115,6 +128,9 @@ public class OrderRepositoryTest {
 	}
 
 	private Order createSampleOrder() {
+		var product = new Product(UUID.randomUUID(), RandomStringUtils.randomAlphanumeric(5),"Description", "image_url",
+				BigDecimal.valueOf(49.99), ProductCategoryEnum.DESSERT);
+		productRepository.create(product);
 		return new Order(
 				UUID.randomUUID(),
 				UUID.randomUUID(),
@@ -124,8 +140,7 @@ public class OrderRepositoryTest {
 				LocalDateTime.now(),
 				0,
 				List.of(new ProductAndQuantity(
-						new Product(UUID.randomUUID(), "Sample Product", "Description", "image_url",
-								BigDecimal.valueOf(49.99), null), 2)),
+						product, 2)),
 				List.of(),
 				null
 		);
