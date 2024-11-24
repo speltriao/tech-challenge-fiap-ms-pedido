@@ -33,8 +33,8 @@ jobs:
       - name: Make gradlew executable
         run: chmod +x ./gradlew
 
-      - name: Build with Gradle (skip tests and show warnings)
-        run: ./gradlew build -x test --warning-mode all
+      - name: Build with Gradle
+        run: ./gradlew build
 
       - name: SonarCloud Scan
         env:
