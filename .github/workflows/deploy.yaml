@@ -35,6 +35,7 @@ jobs:
           AWS_SESSION_TOKEN: ${{ secrets.AWS_SESSION_TOKEN }}
           DB_HOST: ${{ secrets.DB_HOST }}
           DB_USER: ${{ secrets.DB_USER }}
+          SPRING_DATASOURCE_URL: jdbc:postgresql://${{ secrets.DB_HOST }}:5432/galega
           DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
         run: |
           # java -jar build/libs/order-0.0.1-SNAPSHOT.jar
