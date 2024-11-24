@@ -36,12 +36,13 @@ import java.util.stream.Collectors;
 public class OrderController {
 
     @Autowired
-    SQSOutHandler sqsOutHandler;
+    private SQSOutHandler sqsOutHandler;
 
-    IOrderUseCase iOrderUseCase;
+    @Autowired
+    private IOrderUseCase iOrderUseCase;
 
-    public OrderController(DataSource dataSource) {
-        this.iOrderUseCase = new OrderService(dataSource);
+    public OrderController(IOrderUseCase iOrderUseCase) {
+        this.iOrderUseCase = iOrderUseCase;
     }
 
     @Operation(
@@ -56,10 +57,7 @@ public class OrderController {
             @Valid @RequestParam(required = false) String status,
             @Valid @RequestParam(required = false) String orderBy,
             @Valid @RequestParam(required = false) String orderDirection
-    )
-    {
-
-
+    ) {
         OrderFilters filters = new OrderFilters();
         filters.setStatus(OrderStatusEnum.fromString(status));
         filters.setOrderBy(OrderSortFieldsEnum.fromString(orderBy));
@@ -75,17 +73,17 @@ public class OrderController {
         return ResponseEntity.ok(ordersDTO);
     }
 
-    private boolean orderHasNoParameters(String status, String orderBy, String direction){
+    private boolean orderHasNoParameters(String status, String orderBy, String direction) {
         return status == null && orderBy == null && direction == null;
     }
 
     @Operation(summary = "Create a new Order")
     @PostMapping
-    public ResponseEntity<OrderDTO> createOrder(@Valid @RequestBody CreateOrderDTO request){
+    public ResponseEntity<OrderDTO> createOrder(@Valid @RequestBody CreateOrderDTO request) {
         Order order = OrderMapper.toDomain(request);
         Order createdOrder = iOrderUseCase.create(order);
 
-        if(createdOrder == null){
+        if (createdOrder == null) {
             return ResponseEntity.badRequest().body(null);
         }
 
@@ -99,28 +97,28 @@ public class OrderController {
 
     @Operation(summary = "Get all details of an order")
     @GetMapping("/{id}")
-    public OrderDTO getOrder(@PathVariable String id) throws EntityNotFoundException{
+    public OrderDTO getOrder(@PathVariable String id) throws EntityNotFoundException {
         var order = iOrderUseCase.get(UUID.fromString(id));
         return new OrderDTO(order);
     }
 
-    @Operation(summary = "Update the oder's status")
+    @Operation(summary = "Update the order's status")
     @PatchMapping("/{id}")
     public ResponseEntity<?> updateStatus(
             @PathVariable String id,
             @Valid @RequestBody UpdateOrderStatusDTO request
     ) throws OrderAlreadyWithStatusException, EntityNotFoundException {
-        var oderId = UUID.fromString(id);
+        var orderId = UUID.fromString(id);
         var status = OrderStatusEnum.fromString(request.getStatus().toUpperCase());
-        boolean updated = iOrderUseCase.updateStatus(oderId, status);
+        boolean updated = iOrderUseCase.updateStatus(orderId, status);
 
-        if(updated) return ResponseEntity.ok().build();
+        if (updated) return ResponseEntity.ok().build();
         return ResponseEntity.badRequest().build();
     }
 
     @Operation(summary = "Get the order's history with all status changes")
     @GetMapping("/{id}/history")
-    public List<OrderHistoryDTO> getOrderHistory(@PathVariable UUID id) throws EntityNotFoundException{
+    public List<OrderHistoryDTO> getOrderHistory(@PathVariable UUID id) throws EntityNotFoundException {
         return iOrderUseCase.getOrderHistory(id)
                 .stream()
                 .map(OrderHistoryDTO::new)
