@@ -33,6 +33,7 @@ dependencies {
 	implementation 'software.amazon.awssdk:sqs:2.20.58'
 	implementation 'software.amazon.awssdk:sts:2.20.58'
 	implementation 'software.amazon.awssdk:sns:2.20.58'
+	implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.15.0'
 	compileOnly 'org.projectlombok:lombok'
 	runtimeOnly 'org.postgresql:postgresql'
 	annotationProcessor 'org.projectlombok:lombok'

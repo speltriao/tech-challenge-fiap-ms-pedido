@@ -1,6 +1,7 @@
 package com.galega.order.adapters.in.queue.sqs.mapper;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.galega.order.adapters.in.queue.sqs.dto.PaymentDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,6 +13,7 @@ public abstract class SQSOrderInMapper {
 
 	public static PaymentDTO mapUpdateOrderStatusDTO(String messageBody) {
 		ObjectMapper objectMapper = new ObjectMapper();
+		objectMapper.registerModule(new JavaTimeModule());
 		try {
 			return objectMapper.readValue(messageBody, PaymentDTO.class);
 		} catch (IOException e) {
