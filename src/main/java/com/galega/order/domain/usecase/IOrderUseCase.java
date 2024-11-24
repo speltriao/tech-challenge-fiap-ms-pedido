@@ -7,6 +7,7 @@ import com.galega.order.domain.enums.OrderStatusEnum;
 import com.galega.order.domain.enums.PaymentStatusEnum;
 import com.galega.order.domain.exception.EntityNotFoundException;
 import com.galega.order.domain.exception.OrderAlreadyWithStatusException;
+import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.UUID;

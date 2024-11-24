@@ -41,10 +41,6 @@ public class OrderController {
     @Autowired
     private IOrderUseCase iOrderUseCase;
 
-    public OrderController(IOrderUseCase iOrderUseCase) {
-        this.iOrderUseCase = iOrderUseCase;
-    }
-
     @Operation(
             summary = "List all orders based on query filters",
             parameters = {

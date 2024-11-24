@@ -10,6 +10,8 @@ import com.galega.order.domain.exception.EntityNotFoundException;
 import com.galega.order.domain.exception.OrderAlreadyWithStatusException;
 import com.galega.order.domain.repository.OrderRepositoryPort;
 import com.galega.order.domain.usecase.IOrderUseCase;
+import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import javax.sql.DataSource;
 import java.math.BigDecimal;
@@ -22,8 +24,8 @@ import java.util.UUID;
 import static com.galega.order.domain.enums.OrderStatusEnum.*;
 import static java.math.RoundingMode.HALF_EVEN;
 
+@Service
 public class OrderService implements IOrderUseCase{
-
 
 	OrderRepositoryPort IOrderRepository;
 
