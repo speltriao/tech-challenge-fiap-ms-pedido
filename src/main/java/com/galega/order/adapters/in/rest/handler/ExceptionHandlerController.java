@@ -23,7 +23,7 @@ public class ExceptionHandlerController {
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<ErrorDTO> handleIllegalArgumentException(MethodArgumentNotValidException exception) {
+    public ResponseEntity<ErrorDTO> handleMethodArgumentNotValidException(MethodArgumentNotValidException exception) {
         Locale.setDefault(Locale.US);
         FieldError field = exception.getBindingResult().getFieldErrors().getFirst();
         String details = "Field '" + field.getField() + "' " + field.getDefaultMessage();
@@ -73,9 +73,16 @@ public class ExceptionHandlerController {
     }
 
     @ExceptionHandler(DuplicateKeyException.class)
-    public ResponseEntity<ErrorDTO> handleDuplicateKeyException(DuplicateKeyException exception) {
-        ErrorDTO errorResponse = new ErrorDTO("Invalid body", exception.getCause().getMessage());
-        return ResponseEntity.badRequest().body(errorResponse);
+    public ResponseEntity<ErrorDTO> handleDuplicateKeyException(DuplicateKeyException ex) {
+        Throwable cause = ex.getCause();
+        String details = null;
+
+        if (cause != null) {
+            details = cause.getMessage();
+        }
+
+        ErrorDTO errorDTO = new ErrorDTO("Invalid body", details);
+        return ResponseEntity.badRequest().body(errorDTO);
     }
 
 
