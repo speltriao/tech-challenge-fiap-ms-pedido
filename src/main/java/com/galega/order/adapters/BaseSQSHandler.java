@@ -23,11 +23,11 @@ public abstract class BaseSQSHandler {
 	private void init() {
 		this.sqsClient = SqsClient.builder()
 				.credentialsProvider(StaticCredentialsProvider.create(AwsSessionCredentials.create(
-						appConfig.getAccessKeyId(),
-						appConfig.getSecretKey(),
-						appConfig.getSessionToken()
+						appConfig.accessKeyId,
+						appConfig.secretKey,
+						appConfig.sessionToken
 				)))
-				.region(Region.of(appConfig.getRegion()))
+				.region(Region.of(appConfig.region))
 				.build();
 	}
 }

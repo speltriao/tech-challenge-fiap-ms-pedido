@@ -17,7 +17,7 @@ public class SQSOutHandler extends BaseSQSHandler {
 	public void sendOrderMessage(OrderDTO order) {
 		try {
 			SendMessageRequest sendMessageRequest = SendMessageRequest.builder()
-					.queueUrl(appConfig.getSqsOutputQueueUrl())
+					.queueUrl(appConfig.sqsOutputQueueUrl)
 					.messageBody(OrderOutputMapper.orderDTOtoJson(order))
 					.messageAttributes(Map.of(
 							"messageType", MessageAttributeValue.builder()
@@ -31,7 +31,7 @@ public class SQSOutHandler extends BaseSQSHandler {
 
 			logger.info("Message sent successfully to SQS with ID: {}", response.messageId());
 		} catch (Exception e) {
-			logger.error("Failed to send message to SQS queue: {}", appConfig.getSqsOutputQueueUrl(), e);
+			logger.error("Failed to send message to SQS queue: {}", appConfig.sqsOutputQueueUrl, e);
 		}
 	}
 }

@@ -33,9 +33,9 @@ public class SQSInHandler extends BaseSQSHandler {
 	@Scheduled(fixedDelay = 5000)
 	public void listenToQueue() {
 		try {
-			logger.info("appConfig.getSqsQueueUrl(): {}", appConfig.getSqsInputQueueUrl());
+			logger.info("appConfig.getSqsQueueUrl(): {}", appConfig.sqsInputQueueUrl);
 			ReceiveMessageRequest receiveMessageRequest = ReceiveMessageRequest.builder()
-					.queueUrl(appConfig.getSqsInputQueueUrl())
+					.queueUrl(appConfig.sqsInputQueueUrl)
 					.maxNumberOfMessages(MAX_NUMBER_MESSAGES)
 					.waitTimeSeconds(WAIT_TIME_SECONDS)
 					.build();
@@ -45,11 +45,11 @@ public class SQSInHandler extends BaseSQSHandler {
 
 			for (Message message : messages) {
 				handleMessage(message);
-				sqsClient.deleteMessage(builder -> builder.queueUrl(appConfig.getSqsInputQueueUrl()).receiptHandle(message.receiptHandle()).build());
+				sqsClient.deleteMessage(builder -> builder.queueUrl(appConfig.sqsInputQueueUrl).receiptHandle(message.receiptHandle()).build());
 			}
 
 		} catch (Exception e) {
-			logger.error("Error while receiving messages from SQS queue: {}", appConfig.getSqsInputQueueUrl(), e);
+			logger.error("Error while receiving messages from SQS queue: {}", appConfig.sqsInputQueueUrl, e);
 		}
 	}
 
