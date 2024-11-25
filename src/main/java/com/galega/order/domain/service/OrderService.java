@@ -86,23 +86,6 @@ public class OrderService implements IOrderUseCase{
 	}
 
 	/**
-	 * Calculate the time in seconds for each order in the list
-	 * @param orders the list of orders that will have the time calculated
-	 * @return the list of orders with time calculated in seconds
-	 */
-	private List<Order> calculateOrdersWaitTime(List<Order> orders){
-
-		if(!orders.isEmpty()) {
-			for (Order order : orders) {
-				var waitTime = calculateWaitTime(order);
-				order.setWaitingTimeInSeconds(waitTime);
-			}
-		}
-
-		return orders;
-	}
-
-	/**
 	 * Get all the data from an order, with products and history
 	 * @param id: the oder ID
 	 * @return: The order found in database
