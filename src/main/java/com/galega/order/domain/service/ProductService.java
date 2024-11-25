@@ -4,6 +4,7 @@ import com.galega.order.adapters.out.database.postgres.ProductRepository;
 import com.galega.order.domain.entity.Product;
 import com.galega.order.domain.repository.ProductRepositoryPort;
 import com.galega.order.domain.usecase.IProductUseCase;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.sql.DataSource;
@@ -15,11 +16,9 @@ import java.util.UUID;
 @Service
 public class ProductService implements IProductUseCase {
 
-    private final ProductRepositoryPort productRepository;
+    @Autowired
+    private ProductRepositoryPort productRepository;
 
-    public ProductService(DataSource dataSource) {
-        this.productRepository = new ProductRepository(dataSource);
-    }
 
     @Override
     public Product createProduct(Product product)
