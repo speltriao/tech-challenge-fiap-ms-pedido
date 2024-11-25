@@ -1,6 +1,8 @@
 spring:
+  server:
+    port: 6666
   application:
-    name: tech-challenge-fiap
+    name: tech-challenge-fiap-ms-pedido
   datasource:
     driver-class-name: org.postgresql.Driver
     url: jdbc:postgresql://postgres:5432/galega
