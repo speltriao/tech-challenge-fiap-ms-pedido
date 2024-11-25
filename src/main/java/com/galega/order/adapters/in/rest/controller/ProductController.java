@@ -6,18 +6,17 @@ import com.galega.order.adapters.in.rest.dto.ProductDTO;
 import com.galega.order.adapters.in.rest.mapper.ProductMapper;
 import com.galega.order.domain.entity.Product;
 import com.galega.order.domain.enums.ProductCategoryEnum;
-import com.galega.order.domain.service.ProductService;
 import com.galega.order.domain.usecase.IProductUseCase;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.sql.DataSource;
 import java.util.List;
 
 @Tag(name = "Product Controller")
@@ -25,11 +24,8 @@ import java.util.List;
 @RequestMapping("/products")
 public class ProductController {
 
-  private final IProductUseCase productService;
-
-  public ProductController(DataSource dataSource) {
-    this.productService = new ProductService(dataSource);
-  }
+    @Autowired
+    private IProductUseCase productService;
 
   @GetMapping
     @Operation(
