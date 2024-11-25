@@ -25,11 +25,10 @@ public class SQSInHandler extends BaseSQSHandler {
 
 	private final int MAX_NUMBER_MESSAGES = 10;
 	private final int WAIT_TIME_SECONDS = 20;
-	private final IOrderUseCase orderUseCase;
 
-	public SQSInHandler(DataSource dataSource) {
-		this.orderUseCase = new OrderService(dataSource);
-	}
+	@Autowired
+	private IOrderUseCase orderUseCase;
+
 
 	@Scheduled(fixedDelay = 5000)
 	public void listenToQueue() {

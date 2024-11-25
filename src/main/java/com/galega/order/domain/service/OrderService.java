@@ -10,6 +10,7 @@ import com.galega.order.domain.exception.EntityNotFoundException;
 import com.galega.order.domain.exception.OrderAlreadyWithStatusException;
 import com.galega.order.domain.repository.OrderRepositoryPort;
 import com.galega.order.domain.usecase.IOrderUseCase;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
@@ -27,11 +28,8 @@ import static java.math.RoundingMode.HALF_EVEN;
 @Service
 public class OrderService implements IOrderUseCase{
 
+	@Autowired
 	OrderRepositoryPort IOrderRepository;
-
-	public OrderService(DataSource dataSource) {
-		this.IOrderRepository = new OrderRepository(dataSource);
-	}
 
 	/**
 	 * Gets ALL orders stored at the database
@@ -179,7 +177,7 @@ public class OrderService implements IOrderUseCase{
 	 */
 
 	@Override
-	public boolean updateStatus(UUID id, OrderStatusEnum status) throws OrderAlreadyWithStatusException, EntityNotFoundException{
+	public boolean updateStatus(UUID id, OrderStatusEnum status, boolean isHttpRequest) throws OrderAlreadyWithStatusException, EntityNotFoundException{
 		var order = IOrderRepository.getById(id);
 
 		// Order Not Found in Database
@@ -192,9 +190,12 @@ public class OrderService implements IOrderUseCase{
 						"RECEIVED, IN_PREPARATION, READY_TO_DELIVERY, CANCELED or FINISHED");
 			}
 
-			// Forbidden route usage
+			// Forbidden HTTP route usage
 			case RECEIVED: {
-				throw new IllegalArgumentException("To update to this status use payment route");
+				if (isHttpRequest){ //Payment route is only acessible via SQS
+					throw new IllegalArgumentException("To update to this status use payment route");
+				}
+				break;
 			}
 
 			// RECEIVED -> IN_PREPARATION Validation
@@ -248,7 +249,7 @@ public class OrderService implements IOrderUseCase{
 	public boolean processOrderPayment(UUID orderId, PaymentStatusEnum paymentStatusEnum) throws OrderAlreadyWithStatusException, EntityNotFoundException {
 		var wasOrderPaid = paymentStatusEnum == PaymentStatusEnum.APPROVED;
 		if (wasOrderPaid){
-			updateStatus(orderId, RECEIVED);
+			updateStatus(orderId, RECEIVED, false);
 			return true;
 		}
 		return false;

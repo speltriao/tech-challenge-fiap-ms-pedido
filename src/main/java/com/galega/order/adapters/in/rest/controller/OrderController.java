@@ -106,7 +106,7 @@ public class OrderController {
     ) throws OrderAlreadyWithStatusException, EntityNotFoundException {
         var orderId = UUID.fromString(id);
         var status = OrderStatusEnum.fromString(request.getStatus().toUpperCase());
-        boolean updated = iOrderUseCase.updateStatus(orderId, status);
+        boolean updated = iOrderUseCase.updateStatus(orderId, status, true);
 
         if (updated) return ResponseEntity.ok().build();
         return ResponseEntity.badRequest().build();

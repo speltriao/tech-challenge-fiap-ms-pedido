@@ -105,7 +105,7 @@ public class OrderControllerTest {
 		UpdateOrderStatusDTO updateOrderStatusDTO = new UpdateOrderStatusDTO();
 		updateOrderStatusDTO.setStatus(orderStatus.toString());
 
-		when(iOrderUseCase.updateStatus(eq(orderId), eq(orderStatus)))
+		when(iOrderUseCase.updateStatus(eq(orderId), eq(orderStatus), eq(true)))
 				.thenReturn(true);
 
 		mockMvc.perform(patch("/orders/{id}", orderId)
