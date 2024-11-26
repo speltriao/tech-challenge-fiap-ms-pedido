@@ -71,17 +71,5 @@ spec:
             - name: SPRING_DATASOURCE_DRIVER-CLASS-NAME
               value: "org.postgresql.Driver"
 
-            - name: MERCADOPAGO_ACCESS_KEY
-              valueFrom:
-                configMapKeyRef:
-                  name: mercadopago-credentials
-                  key: access_key
-
-            - name: MERCADOPAGO_PUBLIC_KEY
-              valueFrom:
-                configMapKeyRef:
-                  name: mercadopago-credentials
-                  key: public_key
-
             - name: LOGGING_LEVEL_ORG_FLYWAYDB
               value: DEBUG
