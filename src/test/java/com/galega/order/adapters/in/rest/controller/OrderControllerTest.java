@@ -1,3 +1,13 @@
+/**
+ * This file contains tests for the OrderController following the principles of Behavior-Driven Development (BDD).
+ *
+ * BDD focuses on describing the system's behavior using natural language structures:
+ * - Given: the initial context or setup.
+ * - When: the action to be performed.
+ * - Then: the expected outcome or result.
+ *
+ * This approach improves test readability and aligns development with business requirements.
+ */
 package com.galega.order.adapters.in.rest.controller;
 
 import com.galega.order.adapters.in.rest.dto.CreateOrderDTO;
@@ -50,6 +60,7 @@ public class OrderControllerTest {
 
 	@Test
 	void testCreateOrderValidRequest() throws Exception {
+		// Given a valid request to create an order
 		CreateOrderDTO createOrderDTO = new CreateOrderDTO();
 		createOrderDTO.setCustomerId("123e4567-e89b-12d3-a456-426614174000");
 		createOrderDTO.setProducts(Arrays.asList(
@@ -61,9 +72,9 @@ public class OrderControllerTest {
 		OrderDTO orderDTO = new OrderDTO(order);
 
 		when(iOrderUseCase.create(any(Order.class))).thenReturn(order);
-
 		doNothing().when(sqsOutHandler).sendOrderMessage(any(OrderDTO.class));
 
+		// When the order creation endpoint is called
 		mockMvc.perform(post("/orders")
 						.contentType("application/json")
 						.content("{\"customerId\":\"123e4567-e89b-12d3-a456-426614174000\","
@@ -71,35 +82,46 @@ public class OrderControllerTest {
 								+ "{\"id\":\"123e4567-e89b-12d3-a456-426614174001\",\"quantity\":2},"
 								+ "{\"id\":\"123e4567-e89b-12d3-a456-426614174002\",\"quantity\":1}"
 								+ "]}"))
+				// Then the response should be 201 Created
 				.andExpect(status().isCreated());
 	}
 
 	@Test
 	void testCreateOrderInvalidCustomerId() throws Exception {
+		// Given an invalid customer ID in the request
 		CreateOrderDTO createOrderDTO = new CreateOrderDTO();
 		createOrderDTO.setCustomerId("123");
-		createOrderDTO.setProducts(Arrays.asList(new OrderProductDTO("product1", 2), new OrderProductDTO("product2", 1)));
+		createOrderDTO.setProducts(Arrays.asList(
+				new OrderProductDTO("product1", 2),
+				new OrderProductDTO("product2", 1)
+		));
 
+		// When the order creation endpoint is called
 		mockMvc.perform(post("/orders")
 						.contentType("application/json")
 						.content("{\"customerId\":\"123\",\"products\":[{\"productId\":\"product1\",\"quantity\":2},{\"productId\":\"product2\",\"quantity\":1}]}"))
+				// Then the response should be 400 Bad Request
 				.andExpect(status().isBadRequest());
 	}
 
 	@Test
 	void testGetOrderById() throws Exception {
+		// Given an existing order ID
 		UUID orderId = UUID.randomUUID();
 		Order order = new Order();
 		OrderDTO orderDTO = new OrderDTO(order);
 
 		when(iOrderUseCase.get(orderId)).thenReturn(order);
 
+		// When the GET endpoint is called with the order ID
 		mockMvc.perform(get("/orders/{id}", orderId))
+				// Then the response should be 200 OK
 				.andExpect(status().isOk());
 	}
 
 	@Test
 	void testUpdateOrderStatus() throws Exception {
+		// Given a valid request to update the order status
 		var orderStatus = OrderStatusEnum.CREATED;
 		UUID orderId = UUID.randomUUID();
 		UpdateOrderStatusDTO updateOrderStatusDTO = new UpdateOrderStatusDTO();
@@ -108,30 +130,38 @@ public class OrderControllerTest {
 		when(iOrderUseCase.updateStatus(eq(orderId), eq(orderStatus), eq(true)))
 				.thenReturn(true);
 
+		// When the PATCH endpoint is called with the new status
 		mockMvc.perform(patch("/orders/{id}", orderId)
 						.contentType("application/json")
 						.content("{\"status\": \"" + orderStatus.toString() + "\"}"))
+				// Then the response should be 200 OK
 				.andExpect(status().isOk());
 	}
 
 	@Test
 	void testCreateOrderMissingField() throws Exception {
+		// Given a request with missing fields
 		CreateOrderDTO createOrderDTO = new CreateOrderDTO();
 		createOrderDTO.setProducts(Arrays.asList(new OrderProductDTO("product1", 2)));
 
+		// When the order creation endpoint is called
 		mockMvc.perform(post("/orders")
 						.contentType("application/json")
 						.content("{\"products\":[{\"productId\":\"product1\",\"quantity\":2}]}"))
+				// Then the response should be 400 Bad Request
 				.andExpect(status().isBadRequest());
 	}
 
 	@Test
 	void testGetOrderHistory() throws Exception {
+		// Given an order ID with a history
 		UUID orderId = UUID.randomUUID();
 		var list = Arrays.asList(new OrderHistory(), new OrderHistory());
 		when(iOrderUseCase.getOrderHistory(orderId)).thenReturn(list);
 
+		// When the GET endpoint is called for order history
 		mockMvc.perform(get("/orders/{id}/history", orderId))
+				// Then the response should be 200 OK
 				.andExpect(status().isOk());
 
 		verify(iOrderUseCase, times(1)).getOrderHistory(orderId);
@@ -139,13 +169,16 @@ public class OrderControllerTest {
 
 	@Test
 	void testGetOrder() throws Exception {
+		// Given an existing order ID
 		UUID orderId = UUID.randomUUID();
 		Order order = new Order();
 		OrderDTO orderDTO = new OrderDTO(order);
 
 		when(iOrderUseCase.get(orderId)).thenReturn(order);
 
+		// When the GET endpoint is called with the order ID
 		mockMvc.perform(get("/orders/{id}", orderId.toString()))
+				// Then the response should be 200 OK
 				.andExpect(status().isOk());
 
 		verify(iOrderUseCase, times(1)).get(orderId);
@@ -153,16 +186,19 @@ public class OrderControllerTest {
 
 	@Test
 	void testGetOrdersWithFilters() throws Exception {
+		// Given filters to search for orders
 		var order1 = new Order();
 		var order2 = new Order();
 		var orders = List.of(order1, order2);
 
 		when(iOrderUseCase.getAll(any(OrderFilters.class))).thenReturn(orders);
 
+		// When the GET endpoint is called with filters
 		mockMvc.perform(get("/orders")
 						.param("status", "CREATED")
 						.param("orderBy", "CREATED_AT")
 						.param("orderDirection", "ASC"))
+				// Then the response should be 200 OK
 				.andExpect(status().isOk());
 
 		verify(iOrderUseCase).getAll(any(OrderFilters.class));
@@ -170,13 +206,16 @@ public class OrderControllerTest {
 
 	@Test
 	void testGetOrdersWithoutFilters() throws Exception {
+		// Given no filters for retrieving orders
 		var order1 = new Order();
 		var order2 = new Order();
 		var orders = List.of(order1, order2);
 
 		when(iOrderUseCase.getDefaultListOrders()).thenReturn(orders);
 
+		// When the GET endpoint is called without filters
 		mockMvc.perform(get("/orders"))
+				// Then the response should be 200 OK
 				.andExpect(status().isOk());
 	}
 }
