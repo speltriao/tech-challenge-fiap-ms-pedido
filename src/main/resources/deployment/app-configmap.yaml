@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: galega-ms-payment-config
+data:
+  SPRING_APPLICATION_NAME: "galega-ms-order"
+  SERVER_PORT: "6666"
+  AWS_REGION: "us-east-1"
+  AWS_ACCESS_KEY_ID: "${AWS_ACCESS_KEY_ID}"
+  AWS_SECRET_ACCESS_KEY: "${AWS_SECRET_ACCESS_KEY}"
+  AWS_SESSION_TOKEN: "${AWS_SESSION_TOKEN}"
+  AWS_SQS_INPUT_QUEUE_URL: "${AWS_SQS_INPUT_QUEUE_URL}"
+  AWS_SQS_OUTPUT_QUEUE_URL: "${AWS_SQS_OUTPUT_QUEUE_URL}"

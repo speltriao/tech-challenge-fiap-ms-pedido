@@ -35,7 +35,7 @@ spec:
     spec:
       containers:
         - name: spring-rest-api
-          image: 793862496606.dkr.ecr.us-east-1.amazonaws.com/galega-ms-order-app:latest
+          image: 793862496606.dkr.ecr.us-east-1.amazonaws.com/galega-ms-order:latest
           ports:
             - containerPort: 8080
 
