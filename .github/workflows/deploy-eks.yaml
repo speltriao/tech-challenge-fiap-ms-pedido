@@ -1,0 +1,91 @@
+name: Push and Deploy to AWS
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build-and-push:
+    name: Build and Deploy
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-session-token: ${{ secrets.AWS_SESSION_TOKEN }}
+          aws-region: ${{ secrets.AWS_REGION }}
+
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v1
+
+      - name: Build and Push Docker Image
+        id: build-image
+        env:
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          ECR_REPOSITORY: galega-ms-order-app
+          IMAGE_TAG: latest
+        run: |
+          docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
+          docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+
+      # Configura kubectl com o contexto do cluster EKS
+      - name: Set up kubectl
+        run: |
+          aws eks update-kubeconfig --region ${ { secrets.AWS_REGION } } --name ${{ secrets.CLUSTER_NAME }}
+
+      - name: Create ConfigMap file for EKS
+        run: |
+          # Substitui as variáveis de ambiente nos placeholders do template
+          envsubst < src/main/resources/deployment/app-configmap.yaml > configmap.yaml
+        env:
+          AWS_REGION: ${{ secrets.AWS_REGION }}
+          AWS_ACCESS_KEY: ${{ secrets.AWS_ACCESS_KEY }}
+          AWS_SECRET_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_SESSION_TOKEN: ${{ secrets.AWS_SESSION_TOKEN }}
+          AWS_SQS_OUTPUT_QUEUE_URL: ${{ secrets.AWS_SQS_OUTPUT_QUEUE_URL }}
+          AWS_SQS_INPUT_QUEUE_URL: ${{ secrets.AWS_SQS_INPUT_QUEUE_URL }}
+          SPRING_APPLICATION_NAME: galega-ms-order
+          SERVER_PORT: ${{ secrets.SERVER_PORT }}
+          DB_HOST: ${{ secrets.DB_HOST }}
+          DB_USER: ${{ secrets.DB_USER }}
+          SPRING_DATASOURCE_URL: jdbc:postgresql://${{ secrets.DB_HOST }}:5432/galega
+          DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+
+      # Aplica o arquivo postgres-secrets.yaml com as credenciais
+      - name: Apply ConfigMap
+        run: |
+          kubectl apply -f configmap.yaml
+
+      # Aplicar o deployment ou atualização no cluster EKS
+      - name: Deploy to EKS
+        run: |
+          cd src/main/resources/deployment/
+          kubectl apply -f app-deploy.yaml
+
+      - name: Wait for deployment to be ready
+        run: |
+          kubectl rollout status deployment/galega-ms-order
+
+      - name: Update image in Deployment
+        run: |
+          kubectl set image deployment/galega-ms-order galega-ms-order=${{ steps.login-ecr.outputs.registry }}/galega-ms-order-app:latest
+    env:
+      AWS_REGION: ${{ secrets.AWS_REGION }}
+      AWS_ACCESS_KEY: ${{ secrets.AWS_ACCESS_KEY }}
+      AWS_SECRET_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      AWS_SESSION_TOKEN: ${{ secrets.AWS_SESSION_TOKEN }}
+      AWS_SQS_OUTPUT_QUEUE_URL: ${{ secrets.AWS_SQS_OUTPUT_QUEUE_URL }}
+      AWS_SQS_INPUT_QUEUE_URL: ${{ secrets.AWS_SQS_INPUT_QUEUE_URL }}
+      SPRING_APPLICATION_NAME: galega-ms-order
+      SERVER_PORT: ${{ secrets.SERVER_PORT }}
+      DB_HOST: ${{ secrets.DB_HOST }}
+      DB_USER: ${{ secrets.DB_USER }}
+      SPRING_DATASOURCE_URL: jdbc:postgresql://${{ secrets.DB_HOST }}:5432/galega
+      DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
