@@ -58,7 +58,6 @@ jobs:
           SPRING_DATASOURCE_URL: jdbc:postgresql://${{ secrets.DB_HOST }}:5432/galega
           DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
 
-      # Aplica o arquivo postgres-secrets.yaml com as credenciais
       - name: Apply ConfigMap
         run: |
           kubectl apply -f configmap.yaml
