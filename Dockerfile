@@ -23,7 +23,7 @@ WORKDIR /app
 COPY --from=builder /home/gradle/src/build/libs/galega-ms-order-*.jar /app/galega-ms-order.jar
 COPY src/main/resources /app/resources
 
-EXPOSE 9090
+EXPOSE 6666
 
 # Specify the command to run the application
 CMD ["java", "-jar", "galega-ms-order.jar"]
