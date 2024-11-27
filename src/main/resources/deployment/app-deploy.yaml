@@ -2,74 +2,45 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: spring-rest-api
+  name: galega-ms-order
   annotations:
+    service.beta.kubernetes.io/aws-load-balancer-name: "galega-ms-order-lb"
     service.beta.kubernetes.io/aws-load-balancer-internal: "true"  # Load Balancer Interno
     service.beta.kubernetes.io/aws-load-balancer-type: "nlb"       # Network Load Balancer
     service.beta.kubernetes.io/aws-load-balancer-scheme: "internal" # (Opcional) Especifica que o LB é interno
   labels:
-    name: spring-rest-api
+    name: galega-ms-order
 spec:
   type: LoadBalancer
   ports:
     - name: web
-      port: 8080        # Porta que será exposta
-      targetPort: 8080  # Porta no container que receberá o tráfego
+      port: 6666        # Porta que será exposta
+      targetPort: 6666  # Porta no container que receberá o tráfego
   selector:
-    app: spring-rest-api  # Label selector para encontrar os pods corretos
+    app: galega-ms-order # Label selector para encontrar os pods corretos
 
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: spring-rest-api
+  name: galega-ms-order
 spec:
   selector:
     matchLabels:
-      app: spring-rest-api
+      app: galega-ms-order
   replicas: 1
   template:
     metadata:
       labels:
-        app: spring-rest-api
+        app: galega-ms-order
     spec:
       containers:
-        - name: spring-rest-api
-          image: 793862496606.dkr.ecr.us-east-1.amazonaws.com/galega-ms-order:latest
+        - name: galega-ms-order
+          image: 985353326468.dkr.ecr.us-east-1.amazonaws.com/galega-ms-order-app:latest
           ports:
-            - containerPort: 8080
+            - containerPort: 6666
 
           # Setting Enviornmental Variables
-          env:
-            # Setting Database host address from configMap
-            - name: DATABASE_HOST
-              valueFrom:
-                configMapKeyRef:
-                  name: postgres-conf
-                  key: host
-
-            - name: DATABASE_NAME
-              valueFrom:
-                configMapKeyRef:
-                  name: postgres-conf
-                  key: name
-
-            # Setting Database name from configMap
-            - name: SPRING_DATASOURCE_USERNAME
-              valueFrom:
-                secretKeyRef:
-                  name: postgres-credentials
-                  key: postgres_user
-
-            # Setting Database username from Secret
-            - name: SPRING_DATASOURCE_PASSWORD
-              valueFrom:
-                secretKeyRef:
-                  name: postgres-credentials
-                  key: postgres_password
-
-            - name: SPRING_DATASOURCE_DRIVER-CLASS-NAME
-              value: "org.postgresql.Driver"
-
-            - name: LOGGING_LEVEL_ORG_FLYWAYDB
-              value: DEBUG
+          envFrom:
+            - configMapRef:
+                name: galega-ms-order-config
