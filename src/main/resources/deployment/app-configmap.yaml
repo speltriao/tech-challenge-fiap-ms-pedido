@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: galega-ms-order
+  name: galega-ms-order-config
 data:
   SPRING_APPLICATION_NAME: "galega-ms-order"
   SERVER_PORT: "6666"
