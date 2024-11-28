@@ -38,7 +38,7 @@ jobs:
       # Configura kubectl com o contexto do cluster EKS
       - name: Set up kubectl
         run: |
-          aws eks update-kubeconfig --region ${ { secrets.AWS_REGION } } --name ${{ secrets.CLUSTER_NAME }}
+          aws eks update-kubeconfig --region us-east-1 --name ${{ secrets.CLUSTER_NAME }}
 
       - name: Create ConfigMap file for EKS
         run: |
