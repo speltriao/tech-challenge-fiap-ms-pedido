@@ -33,10 +33,12 @@ jobs:
           echo "CLUSTER_STATUS=$STATUS" >> $GITHUB_ENV
 
       - name: Terraform Init
+        working-directory: ./infra
         if: env.CLUSTER_STATUS == 'not_found'
         run: terraform init
 
       - name: Terraform Plan
+        working-directory: ./infra
         if: env.CLUSTER_STATUS == 'not_found'
         env:
           TF_LOG: DEBUG
@@ -48,6 +50,7 @@ jobs:
         run: terraform plan
 
       - name: Terraform Apply
+        working-directory: ./infra
         if: env.CLUSTER_STATUS == 'not_found'
         env:
           TF_VAR_db_master_username: ${{ secrets.DB_MASTER_USERNAME }}
