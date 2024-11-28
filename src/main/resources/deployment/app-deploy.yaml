@@ -36,7 +36,7 @@ spec:
     spec:
       containers:
         - name: galega-ms-order
-          image: 985353326468.dkr.ecr.us-east-1.amazonaws.com/galega-ms-order-app:latest
+          image: 775370709632.dkr.ecr.us-east-1.amazonaws.com/galega-ms-order-app:latest
           ports:
             - containerPort: 6666
 
