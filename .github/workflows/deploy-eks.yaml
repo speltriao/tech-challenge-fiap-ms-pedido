@@ -86,5 +86,5 @@ jobs:
       SERVER_PORT: ${{ secrets.SERVER_PORT }}
       DB_HOST: ${{ secrets.DB_HOST }}
       DB_USER: ${{ secrets.DB_USER }}
-      SPRING_DATASOURCE_URL: jdbc:postgresql://${{ secrets.DB_HOST }}:5432/galega
+      DB_URL: ${{ secrets.DB_URL  }}
       DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
