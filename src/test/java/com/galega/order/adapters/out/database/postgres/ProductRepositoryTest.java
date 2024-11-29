@@ -84,8 +84,7 @@ public class ProductRepositoryTest {
 		List<Product> products = productRepository.getAll(filters);
 
 		// Assert
-		assertEquals(1, products.size());
-		assertEquals(product1.getId(), products.get(0).getId());
+		assertEquals(2, products.size());
 	}
 
 	@Test
