@@ -1,5 +1,7 @@
 package com.galega.order.adapters.in.queue.sqs.mapper;
 
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.galega.order.adapters.in.queue.sqs.dto.PaymentDTO;
@@ -14,11 +16,17 @@ public abstract class SQSOrderInMapper {
 	public static PaymentDTO mapUpdateOrderStatusDTO(String messageBody) {
 		ObjectMapper objectMapper = new ObjectMapper();
 		objectMapper.registerModule(new JavaTimeModule());
+		objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+
 		try {
-			return objectMapper.readValue(messageBody, PaymentDTO.class);
+			JsonNode rootNode = objectMapper.readTree(messageBody);
+			JsonNode innerMessageNode = rootNode.get("Message");
+
+			return objectMapper.readValue(innerMessageNode.toString(), PaymentDTO.class);
 		} catch (Exception e) {
 			logger.error("Failed to parse message body: {}", messageBody, e);
 			throw new RuntimeException("Invalid message format", e);
 		}
 	}
+
 }
