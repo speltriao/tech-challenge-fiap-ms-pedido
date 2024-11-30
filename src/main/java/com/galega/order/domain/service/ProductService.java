@@ -50,6 +50,11 @@ public class ProductService implements IProductUseCase {
         return deleteFlag == 1;
     }
 
+    @Override
+    public Product getById(UUID id){
+        return productRepository.getById(id);
+    }
+
     private BigDecimal formatToTwoDecimalPlaces(BigDecimal input) {
         if (input == null) {
             throw new IllegalArgumentException("Price cannot be null");

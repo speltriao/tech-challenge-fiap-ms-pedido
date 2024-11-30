@@ -4,6 +4,7 @@ import com.galega.order.adapters.out.database.postgres.OrderRepository;
 import com.galega.order.domain.entity.Order;
 import com.galega.order.domain.entity.OrderFilters;
 import com.galega.order.domain.entity.OrderHistory;
+import com.galega.order.domain.entity.ProductAndQuantity;
 import com.galega.order.domain.enums.OrderStatusEnum;
 import com.galega.order.domain.enums.PaymentStatusEnum;
 import com.galega.order.domain.exception.EntityNotFoundException;
@@ -30,6 +31,9 @@ public class OrderService implements IOrderUseCase{
 
 	@Autowired
 	OrderRepositoryPort IOrderRepository;
+
+	@Autowired
+	ProductService productService;
 
 	/**
 	 * Gets ALL orders stored at the database
@@ -111,11 +115,27 @@ public class OrderService implements IOrderUseCase{
 	 * @return the created order object or null, in case of error
 	 */
 	@Override
-	public Order create(Order order) throws IllegalArgumentException{
+	public Order create(Order order) throws IllegalArgumentException, EntityNotFoundException{
 
 		// The order must have at least one product to be created
 		if(order.getProducts() == null || order.getProducts().isEmpty())
 			throw new IllegalArgumentException("Order must have at least one product");
+
+		// Retrieve all Products from database from ID's list to verify if it exists
+		for (ProductAndQuantity item : order.getProducts()) {
+
+			if (item.getQuantity() <= 0)
+				throw new IllegalArgumentException("Quantity must be greater than zero");
+
+			var product = productService.getById(item.getProduct().getId());
+
+			if (product == null) {
+				throw new EntityNotFoundException("Product", item.getProduct().getId());
+			}
+
+			item.setProduct(product);
+		}
+
 
 		// Sum all products and multiply its quantities to generate the order amount
 		BigDecimal orderAmount = order.getProducts()
