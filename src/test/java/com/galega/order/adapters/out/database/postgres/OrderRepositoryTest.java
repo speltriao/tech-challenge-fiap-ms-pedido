@@ -92,6 +92,19 @@ public class OrderRepositoryTest {
 	}
 
 	@Test
+	void testGetAllOrdersWithoutFilter() {
+		Order order1 = createSampleOrder();
+		Order order2 = createSampleOrder();
+		orderRepository.create(order1);
+		orderRepository.create(order2);
+
+		List<Order> orders = orderRepository.getAll(null);
+
+		assertEquals(2, orders.size());
+	}
+
+
+	@Test
 	void testUpdateOrderStatus() {
 		// Arrange
 		Order order = createSampleOrder();

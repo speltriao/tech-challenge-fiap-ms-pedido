@@ -31,12 +31,14 @@ public class OrderRepository implements OrderRepositoryPort {
     public List<Order> getAll(OrderFilters filters) {
         String sql = "SELECT *, id as order_id FROM public.order";
 
-        if(filters.getStatus() != null) {
-            sql += " WHERE status = '" + filters.getStatus() + "'";
-        }
+        if (filters != null){
+            if(filters.getStatus() != null) {
+                sql += " WHERE status = '" + filters.getStatus() + "'";
+            }
 
-        if(filters.getOrderBy() != null) {
-            sql += " ORDER BY " + filters.getOrderBy().toString().toLowerCase() + " " + filters.getDirection();
+            if(filters.getOrderBy() != null) {
+                sql += " ORDER BY " + filters.getOrderBy().toString().toLowerCase() + " " + filters.getDirection();
+            }
         }
 
         return jdbcTemplate.query(sql, OrderMapper.listMapper);
