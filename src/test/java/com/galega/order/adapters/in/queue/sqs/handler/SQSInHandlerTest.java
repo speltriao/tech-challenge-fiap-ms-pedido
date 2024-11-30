@@ -116,19 +116,23 @@ class SQSInHandlerTest {
 
 		// Mock the nested JSON structure for the "Message"
 		var messageJson = new ObjectMapper().registerModule(new JavaTimeModule()).writeValueAsString(paymentDTO);
+
+		// Escape the messageJson so it can be included properly as a string inside the "Message" field
+		var escapedMessageJson = messageJson.replace("\"", "\\\"");
+
 		var snsMessage = String.format(""" 
     {
       "Type" : "Notification",
       "MessageId" : "b662ffb1-6d88-54d0-a019-a074771e16c1",
       "TopicArn" : "arn:aws:sns:us-east-1:775370709632:PaymentUpdated",
-      "Message" : %s,
+      "Message" : "%s",
       "Timestamp" : "2024-11-30T13:51:18.594Z",
       "SignatureVersion" : "1",
       "Signature" : "MockedSignature",
       "SigningCertURL" : "MockedURL",
       "UnsubscribeURL" : "MockedUnsubscribeURL"
     }
-    """, messageJson);
+    """, escapedMessageJson);
 
 		// Mock the response with the SNS message containing the PENDING payment
 		var message = Message.builder().body(snsMessage).build();
@@ -162,21 +166,25 @@ class SQSInHandlerTest {
 				orderId                       // orderId
 		);
 
-		// Mock the nested JSON structure
+		// Mock the nested JSON structure for the PaymentDTO
 		var messageJson = new ObjectMapper().registerModule(new JavaTimeModule()).writeValueAsString(paymentDTO);
+
+		// Escape the messageJson so it can be included properly as a string inside the "Message" field
+		var escapedMessageJson = messageJson.replace("\"", "\\\"");
+
 		var snsMessage = String.format("""
         {
           "Type" : "Notification",
           "MessageId" : "b662ffb1-6d88-54d0-a019-a074771e16c1",
           "TopicArn" : "arn:aws:sns:us-east-1:775370709632:PaymentUpdated",
-          "Message" : %s,
+          "Message" : "%s",
           "Timestamp" : "2024-11-30T13:51:18.594Z",
           "SignatureVersion" : "1",
           "Signature" : "MockedSignature",
           "SigningCertURL" : "MockedURL",
           "UnsubscribeURL" : "MockedUnsubscribeURL"
         }
-        """, messageJson);
+        """, escapedMessageJson);
 
 		// Mock the response
 		var message = Message.builder().body(snsMessage).build();
@@ -193,4 +201,6 @@ class SQSInHandlerTest {
 		verify(orderUseCase, times(1)).processOrderPayment(orderId, approved);
 		verify(mockSqsClient, times(1)).deleteMessage(any(Consumer.class));
 	}
+
+
 }

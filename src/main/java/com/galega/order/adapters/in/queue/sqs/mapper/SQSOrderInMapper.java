@@ -8,8 +8,6 @@ import com.galega.order.adapters.in.queue.sqs.dto.PaymentDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.IOException;
-
 public abstract class SQSOrderInMapper {
 	protected static final Logger logger = LoggerFactory.getLogger(SQSOrderInMapper.class);
 
@@ -22,11 +20,14 @@ public abstract class SQSOrderInMapper {
 			JsonNode rootNode = objectMapper.readTree(messageBody);
 			JsonNode innerMessageNode = rootNode.get("Message");
 
-			return objectMapper.readValue(innerMessageNode.toString(), PaymentDTO.class);
+			String innerMessage = innerMessageNode.asText();
+
+			return objectMapper.readValue(innerMessage, PaymentDTO.class);
 		} catch (Exception e) {
 			logger.error("Failed to parse message body: {}", messageBody, e);
 			throw new RuntimeException("Invalid message format", e);
 		}
 	}
+
 
 }
