@@ -22,6 +22,6 @@ public class PaymentDTO {
     private String gateway;
     private String externalId;
     private PaymentStatusEnum status;
-    private String id;
-    private String orderId;
+    private UUID id;
+    private UUID orderId;
 }
