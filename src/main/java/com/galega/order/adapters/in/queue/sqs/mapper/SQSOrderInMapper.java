@@ -16,7 +16,7 @@ public abstract class SQSOrderInMapper {
 		objectMapper.registerModule(new JavaTimeModule());
 		try {
 			return objectMapper.readValue(messageBody, PaymentDTO.class);
-		} catch (IOException e) {
+		} catch (Exception e) {
 			logger.error("Failed to parse message body: {}", messageBody, e);
 			throw new RuntimeException("Invalid message format", e);
 		}
