@@ -61,6 +61,10 @@ public class SQSInHandler extends BaseSQSHandler {
 
 	private void processOrderPayment(String messageBody) {
 		var paymentRequest = SQSOrderInMapper.mapUpdateOrderStatusDTO(messageBody);
+		logger.info("paymentRequestDTO: {}", paymentRequest);
+		logger.info("payedAt: {}", paymentRequest.getPayedAt());
+		logger.info("orderId: {}", paymentRequest.getOrderId());
+
 		var orderId = paymentRequest.getOrderId();
 		var paymentStatus = paymentRequest.getStatus();
 
