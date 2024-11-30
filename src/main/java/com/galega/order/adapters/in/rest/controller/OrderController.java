@@ -75,7 +75,7 @@ public class OrderController {
 
     @Operation(summary = "Create a new Order")
     @PostMapping
-    public ResponseEntity<OrderDTO> createOrder(@Valid @RequestBody CreateOrderDTO request) {
+    public ResponseEntity<OrderDTO> createOrder(@Valid @RequestBody CreateOrderDTO request) throws EntityNotFoundException {
         Order order = OrderMapper.toDomain(request);
         Order createdOrder = iOrderUseCase.create(order);
 

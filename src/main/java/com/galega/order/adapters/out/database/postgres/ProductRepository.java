@@ -68,4 +68,6 @@ public class ProductRepository implements ProductRepositoryPort {
         String sql = "DELETE FROM public.product WHERE id = ?";
         return jdbcTemplate.update(sql, id);
     }
+
+
 }

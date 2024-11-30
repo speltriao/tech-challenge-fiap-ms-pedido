@@ -30,6 +30,9 @@ class OrderServiceTest {
 	@Mock
 	private DataSource dataSource;
 
+	@Mock
+	private ProductService productService;
+
 	@InjectMocks
 	private OrderService orderService;
 
@@ -82,18 +85,56 @@ class OrderServiceTest {
 	}
 
 	@Test
-	void testCreateOrder() {
-		var product = new Product(UUID.randomUUID(), "Phone", "Smartphone", "url", BigDecimal.valueOf(500), ProductCategoryEnum.DRINK);
+	void testCreateOrder() throws EntityNotFoundException {
+		UUID productId = UUID.randomUUID();
+		var productFromDb = new Product(productId, "Phone", "Smartphone", "url", BigDecimal.valueOf(500), ProductCategoryEnum.DRINK);
 
-		order.setProducts(List.of(new ProductAndQuantity(product, 1))); // Assuming Product is a valid entity
-		when(orderRepositoryPort.create(order)).thenReturn(1);
+		var productInOrder = new Product(productId, null, null, null, null, null); // Minimal data for the product
+		var productAndQuantity = new ProductAndQuantity(productInOrder, 2);
+		var order = new Order();
+		order.setProducts(List.of(productAndQuantity));
+
+		when(productService.getById(productId)).thenReturn(productFromDb);
+
+		when(orderRepositoryPort.create(order)).thenAnswer(invocation -> {
+			Order createdOrder = invocation.getArgument(0);
+			createdOrder.setId(UUID.randomUUID());
+			return 1;
+		});
 
 		Order createdOrder = orderService.create(order);
 
 		assertNotNull(createdOrder);
+		assertNotNull(createdOrder.getId());
 		assertEquals(OrderStatusEnum.CREATED, createdOrder.getStatus());
+		assertNotNull(createdOrder.getCreatedAt());
+
+		verify(productService).getById(productId);
 		verify(orderRepositoryPort).create(order);
 	}
+
+	@Test
+	void testCreateOrderWithInvalidQuantity() {
+		var productInOrder = new Product(UUID.randomUUID(), null, null, null, null, null);
+		var productAndQuantity = new ProductAndQuantity(productInOrder, 0); // Invalid quantity
+		var order = new Order();
+		order.setProducts(List.of(productAndQuantity));
+
+		var exception = assertThrows(IllegalArgumentException.class, () -> orderService.create(order));
+		assertEquals("Quantity must be greater than zero", exception.getMessage());
+
+		verifyNoInteractions(orderRepositoryPort);
+	}
+
+	@Test
+	void testCreateOrderWithNonExistentProduct() {
+		UUID nonExistentProductId = UUID.randomUUID();
+
+		when(productService.getById(nonExistentProductId)).thenReturn(null);
+
+		verifyNoInteractions(orderRepositoryPort);
+	}
+
 
 	@Test
 	void testCreateOrderWithInvalidProduct() {
