@@ -29,6 +29,7 @@ import software.amazon.awssdk.services.sqs.model.ReceiveMessageResponse;
 import javax.sql.DataSource;
 import java.lang.reflect.Field;
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.UUID;
 import java.util.function.Consumer;
@@ -100,18 +101,96 @@ class SQSInHandlerTest {
 
 	@Test
 	public void processPendingPayment() throws Exception {
-		mockQueue(PaymentStatusEnum.PENDING);
+		// Arrange
+		var pending = PaymentStatusEnum.PENDING; // Use PENDING status
+		var orderId = UUID.randomUUID(); // Mocked orderId
+		var paymentDTO = new PaymentDTO(
+				LocalDateTime.now(),          // payedAt
+				BigDecimal.valueOf(41.9),     // amount
+				"MockGateway",                // gateway
+				"ExternalId123",              // externalId
+				pending,                      // status (PENDING)
+				UUID.randomUUID(),            // id
+				orderId                       // orderId
+		);
+
+		// Mock the nested JSON structure for the "Message"
+		var messageJson = new ObjectMapper().registerModule(new JavaTimeModule()).writeValueAsString(paymentDTO);
+		var snsMessage = String.format(""" 
+    {
+      "Type" : "Notification",
+      "MessageId" : "b662ffb1-6d88-54d0-a019-a074771e16c1",
+      "TopicArn" : "arn:aws:sns:us-east-1:775370709632:PaymentUpdated",
+      "Message" : %s,
+      "Timestamp" : "2024-11-30T13:51:18.594Z",
+      "SignatureVersion" : "1",
+      "Signature" : "MockedSignature",
+      "SigningCertURL" : "MockedURL",
+      "UnsubscribeURL" : "MockedUnsubscribeURL"
+    }
+    """, messageJson);
+
+		// Mock the response with the SNS message containing the PENDING payment
+		var message = Message.builder().body(snsMessage).build();
+		var response = ReceiveMessageResponse.builder().messages(message).build();
+
+		// Mock receiveMessage to return the message
+		when(mockSqsClient.receiveMessage(any(ReceiveMessageRequest.class))).thenReturn(response);
+
+		// Act
+		when(orderUseCase.processOrderPayment(orderId, pending)).thenReturn(true);
 		sqsInHandler.listenToQueue();
-		verify(mockSqsClient, times(1)).deleteMessage(any(Consumer.class ));
+
+		// Assert
+		verify(orderUseCase, times(1)).processOrderPayment(orderId, pending);
+		verify(mockSqsClient, times(1)).deleteMessage(any(Consumer.class));  // Ensure the message is deleted after processing
 	}
+
 
 	@Test
 	public void processApprovedPayment() throws Exception {
+		// Arrange
 		var approved = PaymentStatusEnum.APPROVED;
-		var uuid = mockQueue(approved);
-		sqsInHandler.listenToQueue();
-		when(orderUseCase.processOrderPayment(uuid,approved)).thenReturn(true);
-		verify(mockSqsClient, times(1)).deleteMessage(any(Consumer.class ));
-	}
+		var orderId = UUID.randomUUID(); // Mocked orderId
+		var paymentDTO = new PaymentDTO(
+				LocalDateTime.now(),          // payedAt
+				BigDecimal.valueOf(41.9),     // amount
+				"MockGateway",                // gateway
+				"ExternalId123",              // externalId
+				approved,                     // status
+				UUID.randomUUID(),            // id
+				orderId                       // orderId
+		);
 
+		// Mock the nested JSON structure
+		var messageJson = new ObjectMapper().registerModule(new JavaTimeModule()).writeValueAsString(paymentDTO);
+		var snsMessage = String.format("""
+        {
+          "Type" : "Notification",
+          "MessageId" : "b662ffb1-6d88-54d0-a019-a074771e16c1",
+          "TopicArn" : "arn:aws:sns:us-east-1:775370709632:PaymentUpdated",
+          "Message" : %s,
+          "Timestamp" : "2024-11-30T13:51:18.594Z",
+          "SignatureVersion" : "1",
+          "Signature" : "MockedSignature",
+          "SigningCertURL" : "MockedURL",
+          "UnsubscribeURL" : "MockedUnsubscribeURL"
+        }
+        """, messageJson);
+
+		// Mock the response
+		var message = Message.builder().body(snsMessage).build();
+		var response = ReceiveMessageResponse.builder().messages(message).build();
+
+		// Mock receiveMessage
+		when(mockSqsClient.receiveMessage(any(ReceiveMessageRequest.class))).thenReturn(response);
+
+		// Act
+		when(orderUseCase.processOrderPayment(orderId, approved)).thenReturn(true);
+		sqsInHandler.listenToQueue();
+
+		// Assert
+		verify(orderUseCase, times(1)).processOrderPayment(orderId, approved);
+		verify(mockSqsClient, times(1)).deleteMessage(any(Consumer.class));
+	}
 }
