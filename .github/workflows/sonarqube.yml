@@ -64,9 +64,3 @@ jobs:
           echo "Coverage: $COVERAGE%"
           echo "Number of Lines of Code (ncloc): $NCLOC"
           echo "Number of Violations: $VIOLATIONS"
-
-      # Executar a análise do SonarCloud
-      - name: SonarCloud Scan
-        uses: SonarSource/sonarcloud-github-action@v2
-        env:
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
